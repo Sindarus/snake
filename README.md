@@ -1,4 +1,4 @@
-instructions pour commencer a participer :  
+# instructions pour commencer a participer :  
 
 sudo apt-get install git  
 
@@ -10,13 +10,13 @@ sudo apt-get install git
 #pour savoir ou en est git  
 
 #les deux commandes qui suivent servent a signer vos contributions  
-    git config --global user.name "<votre_nom>"  
-    git config --global user.email "<votre_adresse_mail>"  
+    git config --global user.name "votre_nom"  
+    git config --global user.email "votre_adresse_mail"  
 
 #allez sur https://git.ares-ensiie.eu/ connectez vous, cherchez le projet que j'ai créé qui s'appelle "MCAC snake". En dessous du logo, il y a un lien en ssh:// Copiez le lien  
 #et faites :  
-    git remote add origin <lien>  
-#explication de la commande : "git" car c'est le programme qu'on utilise, "remote" car on veut gérer les répertoires distants (remote repository, c'est un répertoire sur internet qui contient aussi notre code, ici, c'est gitlab qui joue ce rôle), "add" car on veut déclarer un répertoire existant a git, "origin" pour dire a git qu'on y fera référence par le nom "origin" désormais, "<lien>" ben ca c'est pour lui donner le lien  
+    git remote add origin le_lien  
+#explication de la commande : "git" car c'est le programme qu'on utilise, "remote" car on veut gérer les répertoires distants (remote repository, c'est un répertoire sur internet qui contient aussi notre code, ici, c'est gitlab qui joue ce rôle), "add" car on veut déclarer un répertoire existant a git, "origin" pour dire a git qu'on y fera référence par le nom "origin" désormais, "lien" ben ca c'est pour lui donner le lien  
 
 #puis faites  
     git pull origin master  
@@ -25,71 +25,85 @@ sudo apt-get install git
 
 #faites vos modification en local  
 #ajoutez les a la liste des fichiers a suivre avec  
-    git add <fichier>  
+    git add le_fichier  
 
 #avec git status, assurez vous que toutes vos modifications sont prises en compte  
 #faites  
-    git commit -m "<votre message>"  
+    git commit -m "votre message"  
 #cette commande aura pour effet d'enregistrer les modifications que vous avez apportées au projet sous forme de "commit"  
 #note : il est TRES important de mettre un message adéquat, qui décrive les modifications apportées.  
 
 #pour envoyer vos commits sur gitlab  
     git push origin master  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
 
 zenbu zenbu zenbu
 
