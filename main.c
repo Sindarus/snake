@@ -1,8 +1,19 @@
+/*
+    \file main.c
+    \brief Point d'entrée du programme
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <fcntl.h>
 
+/*
+    \fn void apropos();
+    \brief Affiche des informations a propos du programme
+    \details
+*/
 void apropos(){
 	printf("Ce jeu a été développé par : \n");
 	printf("Marius Hinge\n");
@@ -13,11 +24,15 @@ void apropos(){
 
 int main(){
     printf("==================================\n");
-    printf("||          MCAC SNAKE          ||\n");
+    printf("||          MAC² SNAKE          ||\n");
     printf("==================================\n");
 
+    char input;
     int choix;
     bool ok = 0;
+
+    int fd = open("/dev/input/by-path/platform-i8042-serio-0-event-kbd", O_RDONLY);
+    if(fd == -1) perror ("open");
 
     while(ok != 1){
     	printf("----------------------------\n");
@@ -36,6 +51,7 @@ int main(){
     			ok = 1; printf("Au revoir !\n"); 	break;
     	}
     	sleep(1);
+
     }
 
     return 0;
