@@ -3,4 +3,6 @@
 exe
 *~
 *.txt
-.
+MAC2_snake
+*.o
+
