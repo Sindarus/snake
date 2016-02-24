@@ -80,10 +80,7 @@ snake* new_snake(int size, coord start_pos, field* map) {
 }
 
 void free_snake(snake* s){
-	int i;
-	for(i=0;i<s->size;i++){
-		free(&s->body[i]);
-	}
+	free(s->body);
 	free(s);
 }
 
@@ -129,7 +126,7 @@ field* new_field() {
 		map->f[a] = malloc(map->width*sizeof(square));
 	}
 	for (a = 0; a<map->height; a++) {
-		for (b=0; b<map->width; b++) {
+		for (b = 0; b<map->width; b++) {
 			c.x = a;
 			c.y = b;
 			if (a == 1 || a == map->height-1 || b == 1 || b == map->width-1) {
@@ -145,15 +142,11 @@ field* new_field() {
 }
 
 void free_field(field* map){
-	int i,j;
-	for(i=0;i<map->height;i++){
-		for(j=0;j<map->width;j++){
-			free(&map->f[i][j]);
-		}
+	int i;
+	for(i = 0; i<map->height; i++){
+		free(map->f[i]);
 	}
-	for(i=0;i<map->height;i++){
-		free(&map[i]);
-	}
+	free(map->f);
 	free(map);
 }
 
@@ -161,8 +154,8 @@ void game_over(field* map, snake* s) {
 	mode_raw(0);
 	clear();
 	printf("Game over!\n");
-	free(map);
-	free(s);
+	free_field(map);
+	free_snake(s);
 	exit(0);
 }
 
