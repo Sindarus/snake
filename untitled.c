@@ -157,11 +157,12 @@ void free_field(field* map){
 	free(map);
 }
 
-void game_over() {
+void game_over(field* map, snake* s) {
 	mode_raw(0);
 	clear();
 	printf("Game over!\n");
-	/* Free */
+	free(map);
+	free(s);
 	exit(0);
 }
 
@@ -214,7 +215,7 @@ int move(snake* s, field* map, char c) {
 	print_to_pos(s->body[s->head], 's');
 	
 	if (map->f[s->body[s->head].x][s->body[s->head].y] != EMPTY) {
-		game_over();
+		game_over(map, s);
 	} else {
 		map->f[s->body[s->head].x][s->body[s->head].y] = SNAKE;
 		map->f[c_tail.x][c_tail.y] = EMPTY;
@@ -258,6 +259,6 @@ int main() {
 			}
 		}
 	} while (c != C_QUIT);
-	game_over();
+	game_over(map, s);
 	return 0;
 }
