@@ -79,6 +79,14 @@ snake* new_snake(int size, coord start_pos, field* map) {
 	return s;
 }
 
+void free_snake(snake* s){
+	int i;
+	for(i=0;i<s->size;i++){
+		free(s->body[i]);
+	}
+	free(s);
+}
+
 void mode_raw(int activer) 
 { 
     static struct termios cooked; 
