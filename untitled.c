@@ -82,7 +82,7 @@ snake* new_snake(int size, coord start_pos, field* map) {
 void free_snake(snake* s){
 	int i;
 	for(i=0;i<s->size;i++){
-		free(s->body[i]);
+		free(&s->body[i]);
 	}
 	free(s);
 }
@@ -125,7 +125,7 @@ field* new_field() {
 	map->f = malloc(map->height*sizeof(square*));
 	int a, b;
 	coord c = new_coord_empty();
-	for (a = 0; a<map->width; a++) {
+	for (a = 0; a<map->height; a++) {
 		map->f[a] = malloc(map->width*sizeof(square));
 	}
 	for (a = 0; a<map->height; a++) {
@@ -142,6 +142,19 @@ field* new_field() {
 		}
 	}
 	return map;
+}
+
+void free_field(field* map){
+	int i,j;
+	for(i=0;i<map->height;i++){
+		for(j=0;j<map->width;j++){
+			free(&map->f[i][j]);
+		}
+	}
+	for(i=0;i<map->height;i++){
+		free(&map[i]);
+	}
+	free(map);
 }
 
 void game_over() {
