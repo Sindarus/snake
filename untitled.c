@@ -5,6 +5,7 @@
 #include <sys/ioctl.h>
 #include <sys/select.h>
 #include <termios.h>
+#include <time.h>
 #include <unistd.h>
 
 #define C_UP 122
@@ -14,6 +15,9 @@
 #define C_QUIT 27
 #define MIN_WINDOW_WIDTH 15
 #define MIN_WINDOW_HEIGHT 15
+#define M_WIN "You win!"
+#define M_LOSE "Game over!"
+#define M_QUIT "Goodbye"
 
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 
@@ -44,7 +48,6 @@ typedef struct {
 // Set cursor to [x,y] pos and print char param
 void print_to_pos(coord pos, char c) {
 	printf("\033[%d;%dH%c", pos.x, pos.y, c);
-	fflush(stdout);
 }
 
 /* Constructeurs */
@@ -84,15 +87,15 @@ void free_snake(snake* s){
 	free(s);
 }
 
-void mode_raw(int activer) 
+void mode_raw(int activate) 
 { 
     static struct termios cooked; 
     static int raw_actif = 0; 
   
-    if (raw_actif == activer) 
+    if (raw_actif == activate) 
         return; 
   
-    if (activer) 
+    if (activate) 
     { 
         struct termios raw; 
   
@@ -105,7 +108,7 @@ void mode_raw(int activer)
     else 
         tcsetattr(STDIN_FILENO, TCSANOW, &cooked); 
   
-    raw_actif = activer; 
+    raw_actif = activate; 
 }
 
 field* new_field() {
@@ -150,10 +153,10 @@ void free_field(field* map){
 	free(map);
 }
 
-void game_over(field* map, snake* s) {
+void game_over(field* map, snake* s, char* message) {
 	mode_raw(0);
 	clear();
-	printf("Game over!\n");
+	printf("%s\n", message);
 	free_field(map);
 	free_snake(s);
 	exit(0);
@@ -208,7 +211,8 @@ int move(snake* s, field* map, char c) {
 	print_to_pos(s->body[s->head], 's');
 	
 	if (map->f[s->body[s->head].x][s->body[s->head].y] != EMPTY) {
-		game_over(map, s);
+		return -1;
+		//~ game_over(map, s);
 	} else {
 		map->f[s->body[s->head].x][s->body[s->head].y] = SNAKE;
 		map->f[c_tail.x][c_tail.y] = EMPTY;
@@ -216,15 +220,30 @@ int move(snake* s, field* map, char c) {
 	return 0;
 }
 
-int main() {
-	mode_raw(1); // Disable display of user input
+int main(int argc, char** argv) {
+	if (argc < 2) {
+		printf("Usage: ./untitled <size_of_snake>\n");
+		exit(1);
+	}
 	clear(); // Clear screen
 	printf("\e[?25l"); // Hide cursor
 	field* map = new_field(); // Field
-	coord start_pos = new_coord(map->height/2, map->width/2); // Starting position of snake depending on size of the window
-	snake* s = new_snake(10, start_pos, map); // Create snake with size 10 at start_pos on map
+	if (strtol(argv[1], NULL, 10) > map->height/2) {
+		free_field(map);
+		clear();
+		printf("Please increase your window size or decrease your snake size\n");
+		exit(1);
+	}
+	coord start_pos = new_coord(map->height/2, map->width/5); // Starting position of snake depending on size of the window
+	coord start_pos2 = new_coord(map->height/2, 4*map->width/5); // Starting position of snake depending on size of the window
+	snake* s = new_snake(strtol(argv[1], NULL, 10), start_pos, map); // Create snake with size 10 at start_pos on map
+	snake* shlanga = new_snake(strtol(argv[1], NULL, 10), start_pos2, map); // Create snake with size 10 at start_pos on map
 	char c; // Char for move
+	int r; // Random
+	srand(time(NULL));
 	
+	mode_raw(1); // Disable display of user input
+
 	// Loop while c is not escape
 	do {
 		usleep(150000); // Sleep
@@ -248,10 +267,34 @@ int main() {
 		// Move
 		if (c == C_UP || c == C_DOWN || c == C_LEFT || c == C_RIGHT) {
 			if (move(s, map, c)) {
-				exit(1);
+				game_over(map, s, M_LOSE);
 			}
 		}
+		do {
+			r = 1 + rand() % 4;
+		} while (!(r == 1 && shlanga->dir != DOWN) &&
+			!(r == 2 && shlanga->dir != RIGHT) &&
+			!(r == 3 && shlanga->dir != LEFT) &&
+			!(r == 4 && shlanga->dir != UP));
+		if (r == 1 && shlanga->dir != DOWN) {
+			if (move(shlanga, map, C_UP) < 0) {
+				game_over(map, shlanga, M_WIN);
+			}
+		} else if (r == 2 && shlanga->dir != RIGHT) {
+			if (move(shlanga, map, C_LEFT) < 0) {
+				game_over(map, shlanga, M_WIN);
+			}
+		} else if (r == 3 && shlanga->dir != LEFT) {
+			if (move(shlanga, map, C_RIGHT) < 0) {
+				game_over(map, shlanga, M_WIN);
+			}
+		} else if (r == 4 && shlanga->dir != UP) {
+			if (move(shlanga, map, C_DOWN) < 0) {
+				game_over(map, shlanga, M_WIN);
+			}
+		}
+		fflush(stdout);
 	} while (c != C_QUIT);
-	game_over(map, s);
+	game_over(map, s, M_QUIT);
 	return 0;
 }
