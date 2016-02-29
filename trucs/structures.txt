@@ -1,0 +1,22 @@
+typedef struct {
+	int x;
+	int y;
+} coord;
+
+typedef enum {UP, DOWN, LEFT, RIGHT} direction;
+
+typedef enum {EMPTY, SNAKE, WALL} square;
+
+typedef struct {
+	int size;
+	int head;
+	int tail;
+	coord* body;
+	direction dir;
+} snake;
+
+typedef struct {
+	square** f;
+	int width;
+	int height;
+} field;
