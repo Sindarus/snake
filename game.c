@@ -8,49 +8,10 @@
 #include <time.h>
 #include <unistd.h>
 
-#define C_UP 122
-#define C_DOWN 115
-#define C_LEFT 113
-#define C_RIGHT 100
-#define C_QUIT 27
-#define MIN_WINDOW_WIDTH 15
-#define MIN_WINDOW_HEIGHT 15
-#define M_WIN "You win!"
-#define M_LOSE "Game over!"
-#define M_QUIT "Goodbye"
+#include "game.h"
+#include "display.h"
 
-#define clear() printf("\e[1;1H\e[2J") // Clear screen
-
-typedef struct {
-	int x;
-	int y;
-} coord;
-
-typedef enum {UP, DOWN, LEFT, RIGHT} direction;
-
-typedef enum {EMPTY, SNAKE, WALL} square;
-
-typedef struct {
-	int size;
-	int head;
-	int tail;
-	coord* body;
-	direction dir;
-} snake;
-
-typedef struct {
-	square** f;
-	int width;
-	int height;
-} field;
-
-/*Affichage*/
-// Set cursor to [x,y] pos and print char param
-void print_to_pos(coord pos, char c) {
-	printf("\033[%d;%dH%c", pos.x, pos.y, c);
-}
-
-/* Constructeurs */
+//constructors ======================================
 coord new_coord(int x, int y) {
 	coord c;
 	c.x = x;
@@ -80,35 +41,6 @@ snake* new_snake(int size, coord start_pos, field* map) {
 		start_pos.x++;
 	}
 	return s;
-}
-
-void free_snake(snake* s){
-	free(s->body);
-	free(s);
-}
-
-void mode_raw(int activate) 
-{ 
-    static struct termios cooked; 
-    static int raw_actif = 0; 
-  
-    if (raw_actif == activate) 
-        return; 
-  
-    if (activate) 
-    { 
-        struct termios raw; 
-  
-        tcgetattr(STDIN_FILENO, &cooked); 
-  
-        raw = cooked; 
-        cfmakeraw(&raw); 
-        tcsetattr(STDIN_FILENO, TCSANOW, &raw); 
-    } 
-    else 
-        tcsetattr(STDIN_FILENO, TCSANOW, &cooked); 
-  
-    raw_actif = activate; 
 }
 
 field* new_field() {
@@ -144,6 +76,14 @@ field* new_field() {
 	return map;
 }
 
+
+
+//destructors
+void free_snake(snake* s){
+	free(s->body);
+	free(s);
+}
+
 void free_field(field* map){
 	int i;
 	for(i = 0; i<map->height; i++){
@@ -153,28 +93,7 @@ void free_field(field* map){
 	free(map);
 }
 
-void game_over(field* map, snake* s, char* message) {
-	mode_raw(0);
-	clear();
-	printf("%s\n", message);
-	free_field(map);
-	free_snake(s);
-	exit(0);
-}
-
-/* Emulates kbhit() function on Windows which detects keyboard input */
-int kbhit(void) 
-{ 
-    struct timeval tv = { 0, 0 }; 
-    fd_set readfds; 
-  
-    FD_ZERO(&readfds); 
-    FD_SET(STDIN_FILENO, &readfds); 
-  
-    return select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv) == 1; 
-}
-
-/* Move */
+//moving ==============================
 int move(snake* s, field* map, char c) {
 	coord c_head;
 	coord c_tail;
@@ -220,15 +139,34 @@ int move(snake* s, field* map, char c) {
 	return 0;
 }
 
-int main(int argc, char** argv) {
-	if (argc < 2) {
-		printf("Usage: ./untitled <size_of_snake>\n");
-		exit(1);
-	}
+//other
+void game_over(field* map, snake* s, char* message) {
+	mode_raw(0);
+	clear();
+	printf("%s\n", message);
+	printf("You'll be redirected in 2 seconds\n");
+	sleep(2);
+	free_field(map);
+	free_snake(s);
+}
+
+/* Emulates kbhit() function on Windows which detects keyboard input */
+int kbhit(void) 
+{ 
+    struct timeval tv = { 0, 0 }; 
+    fd_set readfds; 
+  
+    FD_ZERO(&readfds); 
+    FD_SET(STDIN_FILENO, &readfds); 
+  
+    return select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv) == 1; 
+}
+
+void play(int size){
 	clear(); // Clear screen
 	printf("\e[?25l"); // Hide cursor
 	field* map = new_field(); // Field
-	if (strtol(argv[1], NULL, 10) > map->height/2) {
+	if (size > map->height/2) {
 		free_field(map);
 		clear();
 		printf("Please increase your window size or decrease your snake size\n");
@@ -236,8 +174,8 @@ int main(int argc, char** argv) {
 	}
 	coord start_pos = new_coord(map->height/2, map->width/5); // Starting position of snake depending on size of the window
 	coord start_pos2 = new_coord(map->height/2, 4*map->width/5); // Starting position of snake depending on size of the window
-	snake* s = new_snake(strtol(argv[1], NULL, 10), start_pos, map); // Create snake with size 10 at start_pos on map
-	snake* shlanga = new_snake(strtol(argv[1], NULL, 10), start_pos2, map); // Create snake with size 10 at start_pos on map
+	snake* s = new_snake(size, start_pos, map); // Create snake with size 10 at start_pos on map
+	snake* shlanga = new_snake(size, start_pos2, map); // Create snake with size 10 at start_pos on map
 	char c; // Char for move
 	int r; // Random
 	srand(time(NULL));
@@ -247,27 +185,41 @@ int main(int argc, char** argv) {
 	// Loop while c is not escape
 	do {
 		usleep(150000); // Sleep
-		// Check is user hits keyboard
+		// Check if user hits keyboard
 		if (kbhit()) {
 			c = getchar(); // Get input
-		} else {
-			// Automatic moves
-			if (s->dir == UP) {
-				c = C_UP;
-			} else if (s->dir == LEFT) {
-				c = C_LEFT;
-			} else if (s->dir == RIGHT) {
-				c = C_RIGHT;
-			} else if (s->dir == DOWN) {
-				c = C_DOWN;
-			} else {
-				exit(1);
-			}
-		}
+		} 
 		// Move
 		if (c == C_UP || c == C_DOWN || c == C_LEFT || c == C_RIGHT) {
 			if (move(s, map, c)) {
 				game_over(map, s, M_LOSE);
+				return;
+			}
+		}
+		else {
+			// Automatic moves
+			if (s->dir == UP) {
+				if (move(s, map, C_UP)) {
+					game_over(map, s, M_LOSE);
+					return;
+				}
+			} else if (s->dir == LEFT) {
+				if (move(s, map, C_LEFT)) {
+					game_over(map, s, M_LOSE);
+					return;
+				}
+			} else if (s->dir == RIGHT) {
+				if (move(s, map, C_RIGHT)) {
+					game_over(map, s, M_LOSE);
+					return;
+				}
+			} else if (s->dir == DOWN) {
+				if (move(s, map, C_DOWN)) {
+					game_over(map, s, M_LOSE);
+					return;
+				}
+			} else {
+				exit(1);
 			}
 		}
 		do {
@@ -279,22 +231,26 @@ int main(int argc, char** argv) {
 		if (r == 1 && shlanga->dir != DOWN) {
 			if (move(shlanga, map, C_UP) < 0) {
 				game_over(map, shlanga, M_WIN);
+				return;
 			}
 		} else if (r == 2 && shlanga->dir != RIGHT) {
 			if (move(shlanga, map, C_LEFT) < 0) {
 				game_over(map, shlanga, M_WIN);
+				return;
 			}
 		} else if (r == 3 && shlanga->dir != LEFT) {
 			if (move(shlanga, map, C_RIGHT) < 0) {
 				game_over(map, shlanga, M_WIN);
+				return;
 			}
 		} else if (r == 4 && shlanga->dir != UP) {
 			if (move(shlanga, map, C_DOWN) < 0) {
 				game_over(map, shlanga, M_WIN);
+				return;
 			}
 		}
 		fflush(stdout);
 	} while (c != C_QUIT);
 	game_over(map, s, M_QUIT);
-	return 0;
+	return;
 }

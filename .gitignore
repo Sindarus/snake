@@ -2,7 +2,6 @@
 *.out
 exe
 *~
-*.txt
-MAC2_snake
+snake
 *.o
 

@@ -8,6 +8,15 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stropts.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <termios.h>
+#include <time.h>
+
+#include "game.h"
+#include "display.h"
+
 
 /*
     \fn void a_propos();
@@ -28,6 +37,7 @@ int main(){
     printf("==================================\n");
 
     //char input;
+    int taille;
     int choix;
     bool ok = 0;
 
@@ -44,14 +54,18 @@ int main(){
         scanf("%i", &choix);
         switch(choix){
             case 0:
-                ok = 1; printf("Au revoir !\n");    break;
+                ok = 1; printf("Au revoir !\n");
+                break;
             case 1:
-                printf("Pas encore implémenté\n");  break;
+                printf("entrez la taille du serpent :\n");
+                scanf("%i", &taille);
+                play(taille);
+                break;
             case 2:
-                a_propos();                         break;
+                a_propos();
+                break;
         }
         usleep(500000);
-
     }
 
     return 0;
