@@ -140,6 +140,21 @@ int move(snake* s, field* map, char c) {
 }
 
 // Other
+int detect(snake* s, direction c, field* map){
+	int a=s->body[s->head].x;
+	int b=s->body[s->head].y;
+	if (c == UP) {
+		return (map->f[a-1][b] == EMPTY);
+	} else if (c == LEFT) {
+		return (map->f[a][b-1] == EMPTY);
+	} else if (c == RIGHT) {
+		return (map->f[a][b+1] == EMPTY);
+	} else if (c == DOWN) {
+		return (map->f[a+1][b] == EMPTY);
+	}
+	else{return 1;}
+}
+
 void game_over(field* map, snake* s, char* message) {
 	mode_raw(0);
 	clear();
@@ -193,6 +208,7 @@ void play(int size) {
 		if (c == C_UP || c == C_DOWN || c == C_LEFT || c == C_RIGHT) {
 			if (move(s, map, c) < 0) {
 				game_over(map, s, M_LOSE);
+				free_snake(shlanga);
 				return;
 			}
 		} else {
@@ -200,21 +216,25 @@ void play(int size) {
 			if (s->dir == UP) {
 				if (move(s, map, C_UP)) {
 					game_over(map, s, M_LOSE);
+					free_snake(shlanga);
 					return;
 				}
 			} else if (s->dir == LEFT) {
 				if (move(s, map, C_LEFT)) {
 					game_over(map, s, M_LOSE);
+					free_snake(shlanga);
 					return;
 				}
 			} else if (s->dir == RIGHT) {
 				if (move(s, map, C_RIGHT)) {
 					game_over(map, s, M_LOSE);
+					free_snake(shlanga);
 					return;
 				}
 			} else if (s->dir == DOWN) {
 				if (move(s, map, C_DOWN)) {
 					game_over(map, s, M_LOSE);
+					free_snake(shlanga);
 					return;
 				}
 			} else {
@@ -222,31 +242,36 @@ void play(int size) {
 			}
 		}
 		
-		// Move schlanga
+		// Move shlanga
 		do {
 			r = 1 + rand() % 4;
 		} while (!(r == 1 && shlanga->dir != DOWN) &&
 			!(r == 2 && shlanga->dir != RIGHT) &&
 			!(r == 3 && shlanga->dir != LEFT) &&
 			!(r == 4 && shlanga->dir != UP));
-		if (r == 1 && shlanga->dir != DOWN) {
+
+		if (r == 1 && shlanga->dir != DOWN && detect(shlanga,UP,map)) {
 			if (move(shlanga, map, C_UP) < 0) {
 				game_over(map, shlanga, M_WIN);
+				free_snake(s);
 				return;
 			}
-		} else if (r == 2 && shlanga->dir != RIGHT) {
+		} else if (r == 2 && shlanga->dir != RIGHT && detect(shlanga,LEFT,map)) {
 			if (move(shlanga, map, C_LEFT) < 0) {
 				game_over(map, shlanga, M_WIN);
+				free_snake(s);
 				return;
 			}
-		} else if (r == 3 && shlanga->dir != LEFT) {
+		} else if (r == 3 && shlanga->dir != LEFT && detect(shlanga,RIGHT,map)) {
 			if (move(shlanga, map, C_RIGHT) < 0) {
 				game_over(map, shlanga, M_WIN);
+				free_snake(s);
 				return;
 			}
-		} else if (r == 4 && shlanga->dir != UP) {
+		} else if (r == 4 && shlanga->dir != UP && detect(shlanga,DOWN,map)) {
 			if (move(shlanga, map, C_DOWN) < 0) {
 				game_over(map, shlanga, M_WIN);
+				free_snake(s);
 				return;
 			}
 		}
@@ -255,5 +280,6 @@ void play(int size) {
 	} while (c != C_QUIT);
 	
 	game_over(map, s, M_QUIT);
+	free_snake(shlanga);
 	return;
 }
