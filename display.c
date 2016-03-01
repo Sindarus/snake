@@ -17,6 +17,7 @@ void print_to_pos(coord pos, char c) {
 	printf("\033[%d;%dH%c", pos.x, pos.y, c);
 }
 
+// Enable not printing characters sent with keyboard
 void mode_raw(int activate) 
 { 
     static struct termios cooked; 
