@@ -1,7 +1,7 @@
 #ifndef H_GAME
 #define H_GAME
 
-//CONSTANTS ==========================================
+// CONSTANTS ==========================================
 #define C_UP 122
 #define C_DOWN 115
 #define C_LEFT 113
@@ -16,7 +16,7 @@
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 
 
-//STRUCTURES =========================================
+// STRUCTURES =========================================
 typedef struct {
 	int x;
 	int y;
@@ -40,21 +40,21 @@ typedef struct {
 	int height;
 } field;
 
-//PROTOTYPES =========================================
-//constructors ======================================
+// PROTOTYPES =========================================
+// Constructors ======================================
 coord new_coord(int x, int y);
 coord new_coord_empty();
 snake* new_snake(int size, coord start_pos, field* map);
 field* new_field();
 
-//destructors
+// Destructors
 void free_snake(snake* s);
 void free_field(field* map);
 
-//moving ==============================
+// Moving ==============================
 int move(snake* s, field* map, char c);
 
-//other
+// Other
 void game_over(field* map, snake* s, char* message);
 int kbhit(void);
 

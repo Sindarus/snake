@@ -11,7 +11,7 @@
 #include "game.h"
 #include "display.h"
 
-//constructors ======================================
+// Constructors ======================================
 coord new_coord(int x, int y) {
 	coord c;
 	c.x = x;
@@ -78,7 +78,7 @@ field* new_field() {
 
 
 
-//destructors
+// Destructors
 void free_snake(snake* s){
 	free(s->body);
 	free(s);
@@ -93,7 +93,7 @@ void free_field(field* map){
 	free(map);
 }
 
-//moving ==============================
+// Moving ==============================
 int move(snake* s, field* map, char c) {
 	coord c_head;
 	coord c_tail;
@@ -139,20 +139,19 @@ int move(snake* s, field* map, char c) {
 	return 0;
 }
 
-//other
+// Other
 void game_over(field* map, snake* s, char* message) {
 	mode_raw(0);
 	clear();
 	printf("%s\n", message);
-	printf("You'll be redirected in 2 seconds\n");
-	sleep(2);
+	//~ printf("You'll be redirected in 2 seconds\n");
+	//~ sleep(2);
 	free_field(map);
 	free_snake(s);
 }
 
 /* Emulates kbhit() function on Windows which detects keyboard input */
-int kbhit(void) 
-{ 
+int kbhit(void) { 
     struct timeval tv = { 0, 0 }; 
     fd_set readfds; 
   
@@ -162,7 +161,7 @@ int kbhit(void)
     return select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv) == 1; 
 }
 
-void play(int size){
+void play(int size) {
 	clear(); // Clear screen
 	printf("\e[?25l"); // Hide cursor
 	field* map = new_field(); // Field
@@ -189,14 +188,14 @@ void play(int size){
 		if (kbhit()) {
 			c = getchar(); // Get input
 		} 
-		// Move
+		
+		// Move snake
 		if (c == C_UP || c == C_DOWN || c == C_LEFT || c == C_RIGHT) {
-			if (move(s, map, c)) {
+			if (move(s, map, c) < 0) {
 				game_over(map, s, M_LOSE);
 				return;
 			}
-		}
-		else {
+		} else {
 			// Automatic moves
 			if (s->dir == UP) {
 				if (move(s, map, C_UP)) {
@@ -222,6 +221,8 @@ void play(int size){
 				exit(1);
 			}
 		}
+		
+		// Move schlanga
 		do {
 			r = 1 + rand() % 4;
 		} while (!(r == 1 && shlanga->dir != DOWN) &&
@@ -249,8 +250,10 @@ void play(int size){
 				return;
 			}
 		}
+		
 		fflush(stdout);
 	} while (c != C_QUIT);
+	
 	game_over(map, s, M_QUIT);
 	return;
 }

@@ -57,7 +57,7 @@ int main(){
                 ok = 1; printf("Au revoir !\n");
                 break;
             case 1:
-                printf("entrez la taille du serpent :\n");
+                printf("Entrez la taille du serpent :\n");
                 scanf("%i", &taille);
                 play(taille);
                 break;
