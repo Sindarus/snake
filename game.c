@@ -139,7 +139,60 @@ int move(snake* s, field* map, char c) {
 	return 0;
 }
 
+// Display ==================================
+// Set cursor to [x,y] pos and print char param
+void print_to_pos(coord pos, char c) {
+	printf("\033[%d;%dH%c", pos.x, pos.y, c);
+}
+
+// Enable not printing characters sent with keyboard
+void mode_raw(int activate) 
+{ 
+    static struct termios cooked; 
+    static int raw_actif = 0; 
+  
+    if (raw_actif == activate) 
+        return; 
+  
+    if (activate) 
+    { 
+        struct termios raw; 
+  
+        tcgetattr(STDIN_FILENO, &cooked); 
+  
+        raw = cooked; 
+        cfmakeraw(&raw); 
+        tcsetattr(STDIN_FILENO, TCSANOW, &raw); 
+    } 
+    else 
+        tcsetattr(STDIN_FILENO, TCSANOW, &cooked);
+  
+    raw_actif = activate; 
+}
+
+// Input/Output
+/* Emulates kbhit() function on Windows which detects keyboard input */
+int kbhit(void) { 
+    struct timeval tv = { 0, 0 }; 
+    fd_set readfds; 
+  
+    FD_ZERO(&readfds); 
+    FD_SET(STDIN_FILENO, &readfds); 
+  
+    return select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv) == 1; 
+}
+
 // Other
+void game_over(field* map, snake* s, char* message) {
+	mode_raw(0);
+	clear();
+	printf("%s\n", message);
+	//~ printf("You'll be redirected in 2 seconds\n");
+	//~ sleep(2);
+	free_field(map);
+	free_snake(s);
+}
+
 int detect(snake* s, direction c, field* map){
 	int a=s->body[s->head].x;
 	int b=s->body[s->head].y;
@@ -153,27 +206,6 @@ int detect(snake* s, direction c, field* map){
 		return (map->f[a+1][b] == EMPTY);
 	}
 	else{return 1;}
-}
-
-void game_over(field* map, snake* s, char* message) {
-	mode_raw(0);
-	clear();
-	printf("%s\n", message);
-	//~ printf("You'll be redirected in 2 seconds\n");
-	//~ sleep(2);
-	free_field(map);
-	free_snake(s);
-}
-
-/* Emulates kbhit() function on Windows which detects keyboard input */
-int kbhit(void) { 
-    struct timeval tv = { 0, 0 }; 
-    fd_set readfds; 
-  
-    FD_ZERO(&readfds); 
-    FD_SET(STDIN_FILENO, &readfds); 
-  
-    return select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv) == 1; 
 }
 
 void play(int size) {
