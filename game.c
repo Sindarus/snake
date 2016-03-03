@@ -9,7 +9,6 @@
 #include <unistd.h>
 
 #include "game.h"
-#include "display.h"
 
 // Constructors ======================================
 coord new_coord(int x, int y) {

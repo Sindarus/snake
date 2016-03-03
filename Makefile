@@ -1,8 +1,5 @@
-snake: game.o display.o main.o
-	gcc display.o game.o main.o -o snake
-
-display.o: display.c
-	gcc -c display.c -Wall -Wextra
+snake: game.o main.o
+	gcc game.o main.o -o snake
 
 game.o: game.c
 	gcc -c game.c -Wall -Wextra

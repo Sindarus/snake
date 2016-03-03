@@ -15,7 +15,6 @@
 #include <time.h>
 
 #include "game.h"
-#include "display.h"
 
 
 /*
