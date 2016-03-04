@@ -16,7 +16,6 @@
 
 #include "game.h"
 
-
 /*
     \fn void a_propos();
     \brief Affiche des informations a propos du programme
@@ -39,9 +38,6 @@ int main(){
     int taille;
     int choix;
     bool ok = 0;
-
-    //int fd = open("/dev/input/by-path/platform-i8042-serio-0-event-kbd", O_RDONLY);
-    //if(fd == -1) perror ("open");
 
     while(ok != 1){
         printf("----------------------------\n");

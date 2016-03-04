@@ -11,6 +11,12 @@
 #include "game.h"
 
 // Constructors ======================================
+/**
+* \fn coord new_coord(int x, int y);
+* \brief Used to create a new variable of type 'coord' that has 'x' and
+*  		 'y' as coordinates
+* \returns the newly created 'coord' structure
+*/
 coord new_coord(int x, int y) {
 	coord c;
 	c.x = x;
@@ -18,6 +24,12 @@ coord new_coord(int x, int y) {
 	return c;
 }
 
+/**
+* \fn coord new_coord_empty();
+* \brief Used to create a new variable of type 'coord', that has 0 for
+*   	 coordinates
+* \returns the newly created 'coord' structure
+*/
 coord new_coord_empty() {
 	coord c;
 	c.x = 0;
@@ -25,6 +37,12 @@ coord new_coord_empty() {
 	return c;
 }
 
+/**
+* \fn snake* new_snake(int size, coord start_pos, field* map);
+* \brief Used to create a new variable of type 'snake'
+* \param size size of the snake
+* \returns a pointer to the newly created 'snake' variable
+*/
 snake* new_snake(int size, coord start_pos, field* map) {
 	snake* s = malloc(sizeof(snake));
 	int i;
@@ -34,7 +52,7 @@ snake* new_snake(int size, coord start_pos, field* map) {
 	s->size = size;
 	s->dir = UP;
 	for (i = size-1; i>=0; i--) {
-		s->body[i] = start_pos;
+		s->body[i] = start_pos;  //at first, the snake fits in one square
 		print_to_pos(start_pos, 's');
 		map->f[start_pos.x][start_pos.y] = SNAKE;
 		start_pos.x++;
@@ -42,23 +60,33 @@ snake* new_snake(int size, coord start_pos, field* map) {
 	return s;
 }
 
+/**
+* \fn field* new_field();
+* \brief Used to create a new 'field'
+* \returns a pointer to the newly created 'field' variable
+*/
 field* new_field() {
 	struct winsize sz; // Struct containing size of window
-	
-	ioctl(0, TIOCGWINSZ, &sz); // Calculate size
+	int a, b;
+
 	field* map = malloc(sizeof(field));
+
+	ioctl(0, TIOCGWINSZ, &sz); // Calculate size of window
 	map->width = sz.ws_col; // Width of window
 	map->height = sz.ws_row; // Height of window
 	if (map->width < MIN_WINDOW_WIDTH || map->height < MIN_WINDOW_HEIGHT) {
 		printf("Your window is too small\n");
 		exit(1);
 	}
+
+	//creation of 'f'
 	map->f = malloc(map->height*sizeof(square*));
-	int a, b;
-	coord c = new_coord_empty();
 	for (a = 0; a<map->height; a++) {
 		map->f[a] = malloc(map->width*sizeof(square));
 	}
+
+	//initialisation of 'f'
+	coord c = new_coord_empty();
 	for (a = 0; a<map->height; a++) {
 		for (b = 0; b<map->width; b++) {
 			c.x = a;
@@ -78,11 +106,19 @@ field* new_field() {
 
 
 // Destructors
+/**
+* \fn void free_snake(snake* s);
+* \brief Used to free memory used by the 's' snake
+*/
 void free_snake(snake* s){
 	free(s->body);
 	free(s);
 }
 
+/**
+* \fn void free_snake(snake* s);
+* \brief Used to free memory used by the 'map' field
+*/
 void free_field(field* map){
 	int i;
 	for(i = 0; i<map->height; i++){
@@ -94,6 +130,7 @@ void free_field(field* map){
 
 // Moving ==============================
 int move(snake* s, field* map, char c) {
+	//will hold the old coordinates of the head and tail.
 	coord c_head;
 	coord c_tail;
 	
@@ -102,10 +139,12 @@ int move(snake* s, field* map, char c) {
 	c_head = s->body[s->head];
 	c_tail = s->body[s->tail];
 	
-	s->head = s->tail; // Pointer of head becomes pointer of tail
-	s->tail = (s->head+1) % (s->size); // Pointer of head becomes next pointer
+	s->head = s->tail; // Index of head becomes index of tail.
+					   // We then replace the coordinates of the old tail
+					   // with the coordinates of the new head
+	s->tail = (s->head+1) % (s->size); // update index of tail
 
-	// Updating snake
+	// Updating snake's head coordinates
 	if (c == C_UP) {
 		s->dir = UP;
 		s->body[s->head].x = c_head.x-1;
@@ -128,6 +167,7 @@ int move(snake* s, field* map, char c) {
 	print_to_pos(c_tail, ' ');
 	print_to_pos(s->body[s->head], 's');
 	
+	//Collision management
 	if (map->f[s->body[s->head].x][s->body[s->head].y] != EMPTY) {
 		return -1;
 		//~ game_over(map, s);
@@ -139,12 +179,20 @@ int move(snake* s, field* map, char c) {
 }
 
 // Display ==================================
-// Set cursor to [x,y] pos and print char param
+/**
+* \fn void print_to_pos(coord pos, char c);
+* \brief prints the character 'c' at the given position
+* \details this functions sets the cursor to [x,y] pos and
+*          prints the 'c' param
+*/
 void print_to_pos(coord pos, char c) {
 	printf("\033[%d;%dH%c", pos.x, pos.y, c);
 }
 
-// Enable not printing characters sent with keyboard
+/**
+* \fn void mode_raw(int activate);
+* \brief Use mode_raw(1) to disable displaying user input.
+*/
 void mode_raw(int activate) 
 { 
     static struct termios cooked; 
@@ -170,7 +218,10 @@ void mode_raw(int activate)
 }
 
 // Input/Output
-/* Emulates kbhit() function on Windows which detects keyboard input */
+/**
+* \fn int kbhit(void);
+* \brief Emulates kbhit() function on Windows which detects keyboard input
+*/
 int kbhit(void) { 
     struct timeval tv = { 0, 0 }; 
     fd_set readfds; 
@@ -182,6 +233,10 @@ int kbhit(void) {
 }
 
 // Other
+/**
+* \fn void game_over(field* map, snake* s, char* message);
+* \brief function called when a player looses
+*/
 void game_over(field* map, snake* s, char* message) {
 	mode_raw(0);
 	clear();
@@ -192,6 +247,11 @@ void game_over(field* map, snake* s, char* message) {
 	free_snake(s);
 }
 
+/**
+* \fn int detect(snake* s, direction c, field* map);
+* \brief unused function that returns 1 if the 's' snake can go in the
+*	     'c' direction without dying.
+*/
 int detect(snake* s, direction c, field* map){
 	int a=s->body[s->head].x;
 	int b=s->body[s->head].y;
@@ -207,6 +267,12 @@ int detect(snake* s, direction c, field* map){
 	else{return 1;}
 }
 
+/**
+* \fn void play(int size);
+* \brief Function that launches a game and makes it run.
+* \details This function cares for the creation of the snakes and field,
+*		   the passing of the time, the collision management and so on.
+*/
 void play(int size) {
 	clear(); // Clear screen
 	printf("\e[?25l"); // Hide cursor
