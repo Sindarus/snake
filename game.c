@@ -217,6 +217,33 @@ void mode_raw(int activate)
     raw_actif = activate; 
 }
 
+/**
+* \fn void display(field* map, snake* s1, snake* s2);
+* \brief Displays the map and the snakes;
+*/
+void display(field* map, snake* s1, snake* s2){
+	int a, b;
+	for(a = 0; a < map->height; a++){
+		for(b = 0; b < map->width; b++){
+			switch(map->f[a][b]){
+				case EMPTY:
+					print_to_pos(new_coord(a, b), ' ');
+					break;
+				case WALL:
+					print_to_pos(new_coord(a, b), '#');
+					break;
+			}
+		}
+	}
+
+	for(a=0; a<s1.size; a++){
+		print_to_pos(s1.body[a], 's');
+	}
+	for(a=0; a<s2.size; a++){
+		print_to_pos(s2.body[a], 's');
+	}
+}
+
 // Input/Output
 /**
 * \fn int kbhit(void);

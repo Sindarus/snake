@@ -83,6 +83,7 @@ int move(snake* s, field* map, char c);
 // Display
 void print_to_pos(coord pos, char c);
 void mode_raw(int activate);
+void display(field* map, snake* s1, snake* s2);
 
 // Input/Output
 int kbhit(void);
