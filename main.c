@@ -17,12 +17,11 @@
 #include "game.h"
 
 /*
-    \fn void a_propos();
-    \brief Affiche des informations a propos du programme
-    \details
+    \fn void about();
+    \brief Displays info about the program
 */
-void a_propos(){
-    printf("Ce jeu a été développé par : \n");
+void about(){
+    printf("This game has been developped by : \n");
     printf("Marius Hinge\n");
     printf("Camille Feller\n");
     printf("Aurélien Bourgeois\n");
@@ -43,21 +42,21 @@ int main(){
         printf("----------------------------\n");
         printf("|           MENU           |\n");
         printf("----------------------------\n");
-        printf("0 - Quitter le jeu\n");
-        printf("1 - Jouer au Snake\n");
-        printf("2 - A propos de ce programme\n");
+        printf("0 - Quit game\n");
+        printf("1 - Play\n");
+        printf("2 - About this program\n");
         scanf("%i", &choix);
         switch(choix){
             case 0:
-                ok = 1; printf("Au revoir !\n");
+                ok = 1; printf("Good bye !\n");
                 break;
             case 1:
-                printf("Entrez la taille du serpent :\n");
+                printf("Enter snake size :\n");
                 scanf("%i", &taille);
                 play(taille);
                 break;
             case 2:
-                a_propos();
+                about();
                 break;
         }
         usleep(500000);
