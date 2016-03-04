@@ -1,18 +1,12 @@
 /*
     \file main.c
-    \brief Point d'entrée du programme
+    \brief Entry point of the program
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stropts.h>
-#include <sys/ioctl.h>
-#include <sys/select.h>
-#include <termios.h>
-#include <time.h>
+#include <stdio.h>          //for 'printf()'
+#include <stdlib.h>         //for 'srand()'
+#include <unistd.h>         //for 'usleep()'
+#include <time.h>           //for 'time()'
 
 #include "game.h"
 
@@ -28,7 +22,16 @@ void about(){
     printf("Clément Saintier\n");
 }
 
+/**
+* \fn int main();
+* \brief Ain'tcha ever seen a main function ?
+*/
 int main(){
+    // FILE* fp;
+    // fp = fopen("output.log", "w");
+    // close(fp)
+
+    srand(time(NULL));
     printf("==================================\n");
     printf("||          MAC² SNAKE          ||\n");
     printf("==================================\n");

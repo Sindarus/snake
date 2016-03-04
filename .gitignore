@@ -4,4 +4,4 @@ exe
 *~
 snake
 *.o
-
+*.log

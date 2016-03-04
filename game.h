@@ -1,98 +1,46 @@
 #ifndef H_GAME
 #define H_GAME
 
-// CONSTANTS ==========================================
-#define C_UP 122		/** \def C_UP id number of the key used to move up. 122 = z 	*/
-#define C_DOWN 115		/** \def C_UP id number of the key used to move down. 115 = s 	*/
-#define C_LEFT 113		/** \def C_UP id number of the key used to move left. 113 = q 	*/
-#define C_RIGHT 100		/** \def C_UP id number of the key used to move right. 100 = d 	*/
-#define C_QUIT 27		/** \def C_UP id number of the key used to quit. 27 = <esc>		*/
+#include "types.h"
+
+// CONSTANTS ============================================================
+#define C_UP 122		/** \def C_UP id number of key to move up. 122 = z 		*/
+#define C_DOWN 115		/** \def C_UP id number of key to move down. 115 = s 	*/
+#define C_LEFT 113		/** \def C_UP id number of key to move left. 113 = q 	*/
+#define C_RIGHT 100		/** \def C_UP id number of key to move right. 100 = d 	*/
+#define C_QUIT 27		/** \def C_UP id number of key to quit. 27 = <esc>		*/
 
 #define MIN_WINDOW_WIDTH 15
 #define MIN_WINDOW_HEIGHT 15
 
-#define M_WIN "You win!"
-#define M_LOSE "Game over!"
-#define M_QUIT "Goodbye"
+#define TIME_STEP 100   /** \def TIME_STEP time between two time steps. In msec. */
+
+#define MSG_LOOSE 1		//used to replace inexpresive numbers by explicit constants
+#define MSG_WIN 2
+#define MSG_DRAW 3
+
+#define SNAKE_DEAD 1
+#define SCHLANGA_DEAD 2
+#define BOTH_DEAD 3
 
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 
+// PROTOTYPES ==========================================================
+// Game ================================================================
+void play(int size);
+void move(snake* s, direction d);
+int collisions(field* map, snake* s1, snake* s2);
 
-// STRUCTURES =========================================
-/**
-* \struct coord
-* \brief struct Represents a couple of coordinates.
-*/
-typedef struct {
-	int x;
-	int y;
-} coord;
+// Input/Output ========================================================
+int kbhit(void);
+bool key_is_dir(char c);
+direction key_to_dir(char c);
 
-/**
-* \enum direction
-* \brief Allows to use the four main directions.
-*/
-typedef enum {UP, DOWN, LEFT, RIGHT} direction;
-
-/**
-* \enum square
-* \brief Gathers the possible content of a square of the field.
-*/
-typedef enum {EMPTY, SNAKE, WALL} square;
-
-/**
-* \sctruct snake
-* \brief Represents a snake
-* \details 'body' is an array of 'coord'.
-* 		   'head' holds the index of the coordinates of the head in 'body'
-*		   'tail' holds the index of the coordinates of the tail in 'body'
-*		   'dir' is the direction the snake is currently moving.
-*/
-typedef struct {
-	int size;
-	int head;
-	int tail;
-	coord* body;
-	direction dir;
-} snake;
-
-/**
-* \sctruct field
-* \brief Represents the arena on which the game is played
-*/
-typedef struct {
-	square** f;
-	int width;
-	int height;
-} field;
-
-// PROTOTYPES =========================================
-// Constructors ======================================
-coord new_coord(int x, int y);
-coord new_coord_empty();
-snake* new_snake(int size, coord start_pos, field* map);
-field* new_field();
-
-// Destructors
-void free_snake(snake* s);
-void free_field(field* map);
-
-// Moving ==============================
-int move(snake* s, field* map, char c);
-
-// Display
+// Display =============================================================
 void print_to_pos(coord pos, char c);
 void mode_raw(int activate);
-void display(field* map, snake* s1, snake* s2);
-
-// Input/Output
-int kbhit(void);
-
-// Other
-void game_over(field* map, snake* s, char* message);
-int detect(snake* s, direction c, field* map);
-
-void play(int size);
-
+void normal_console();
+void print_msg(int msg);
+//void display(field* map, snake* s1, snake* s2);
 
 #endif
