@@ -185,6 +185,14 @@ square get_square_at(field* map, coord c){
 }
 
 /**
+* \fn square set_square_at(field* map, coord c, square stuff);
+* \brief Sets 'square' at 'c' on 'map'.
+*/
+square set_square_at(field* map, coord c, square stuff){
+    map->f[c.x][c.y] = stuff;
+}
+
+/**
 * \fn coord get_head_coord(snake* s);
 * \return the coordinates of the head of 's'
 */

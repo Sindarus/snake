@@ -24,7 +24,7 @@ typedef enum {UP, DOWN, LEFT, RIGHT} direction;
 * \enum square
 * \brief Gathers the possible content of a square of the field.
 */
-typedef enum {EMPTY, WALL} square;
+typedef enum {EMPTY, WALL, SNAKE, SCHLANGA} square;
 
 /**
 * \sctruct snake
@@ -68,6 +68,7 @@ void free_all(field* map, snake* s1, snake* s2);
 bool are_equal(coord c1, coord c2);
 direction opposite(direction d);
 square get_square_at(field* map, coord c);
+square set_square_at(field* map, coord c, square stuff);
 coord get_head_coord(snake* s);
 coord coord_after_dir(coord c, direction dir);
 
