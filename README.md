@@ -1,12 +1,12 @@
 # Pour installer, utiliser et compiler avec SDL
-Dans un terminal :
-`sudo apt-get install libsdl2-dev `
-En haut de vos sources :
-`#include "SDL.h"`
-pour compiler :
-`gcc -c -Wall -Wextra main.c $(sdl2-config --cflags)`
-pour linker
-`gcc -o exe main.o $(sdl2-config --libs)`
+Dans un terminal :  
+`sudo apt-get install libsdl2-dev `  
+En haut de vos sources :  
+`#include "SDL.h"`  
+pour compiler :  
+`gcc -c -Wall -Wextra main.c `sdl2-config --cflags)``  
+pour linker  
+`gcc -o exe main.o `sdl2-config --libs``  
 
 # Pour commenter:
 ```
