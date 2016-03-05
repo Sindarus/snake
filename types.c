@@ -52,7 +52,6 @@ snake* new_snake(int size, coord start_pos) {
     int i;
     s->body = malloc(size*sizeof(coord));
     s->head = size-1;
-    s->tail = 0;
     s->size = size;
     s->dir = UP;
     for (i = size-1; i>=0; i--) {
@@ -193,11 +192,27 @@ void set_square_at(field* map, coord c, square stuff){
 }
 
 /**
+* \fn int get_tail(snake* s);
+* \return Index of the tail in 'body' of 's'
+*/
+int get_tail(snake* s){
+    return (s->head+1) % s->size;
+}
+
+/**
 * \fn coord get_head_coord(snake* s);
 * \return the coordinates of the head of 's'
 */
 coord get_head_coord(snake* s){
     return s->body[s->head];
+}
+
+/**
+* \fn coord get_tail_coord(snake* s);
+* \return the coordinates of the tail of 's'
+*/
+coord get_tail_coord(snake* s){
+    return s->body[get_tail(s)];
 }
 
 /**

@@ -37,7 +37,6 @@ typedef enum {EMPTY, WALL, SNAKE, SCHLANGA} square;
 typedef struct snake {
 	int size;
 	int head;
-	int tail;
 	coord* body;
 	direction dir;
 } snake;
@@ -69,7 +68,9 @@ bool are_equal(coord c1, coord c2);
 direction opposite(direction d);
 square get_square_at(field* map, coord c);
 void set_square_at(field* map, coord c, square stuff);
+int get_tail(snake* s);
 coord get_head_coord(snake* s);
+coord get_tail_coord(snake* s);
 coord coord_after_dir(coord c, direction dir);
 
 #endif
