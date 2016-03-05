@@ -62,7 +62,6 @@ int main(){
                 about();
                 break;
         }
-        usleep(500000);
     }
 
     return 0;

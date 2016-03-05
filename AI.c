@@ -62,41 +62,14 @@ direction rngesus(snake* s){
 */
 direction rngesus2(snake* s, field* map){
     direction dir;
-
-    do{
-        dir = rand() % 4;
-    }while(dir == opposite(s->dir) || !detect(s, dir, map));
-
-    return dir;
-}
-
-/**
-* \fn dir IA_random_v3(snake* s);
-* \brief chooses a direction to move randomly. With wall avoiding mechanism.
-*        With self_avoiding mechanism. Protection against infinite picking.
-*/
-direction AI_random_v3(snake* s, field* map){
-    direction dir;
-    bool bad_move;
-    int i;
     int pick_counter = 0;
 
     do{
         dir = rand() % 4;
         pick_counter++;
-
-        //check if this move makes the snake go into his own body
-        bad_move = 0;
-        for(i=0; i<s->size; i++){
-            if(i == s->head) continue;
-            if(are_equal(
-                    s->body[i],     
-                    coord_after_dir(get_head_coord(s), dir) )){
-                bad_move = 1;
-            }
-        }
-    }while((dir == opposite(s->dir) || !detect(s, dir, map) || bad_move)
-            && pick_counter < 10);
+    }while( (dir == opposite(s->dir) || !detect(s, dir, map))
+                && pick_counter < IA_MAX_PICK);
 
     return dir;
 }
+

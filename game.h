@@ -13,7 +13,7 @@
 #define MIN_WINDOW_WIDTH 15
 #define MIN_WINDOW_HEIGHT 15
 
-#define TIME_STEP 100   /** \def TIME_STEP time between two time steps. In msec. */
+#define TIME_STEP 150   /** \def TIME_STEP time between two time steps. In msec. */
 
 #define MSG_LOOSE 1		//used to replace inexpresive numbers by explicit constants
 #define MSG_WIN 2
@@ -28,7 +28,7 @@
 // PROTOTYPES ==========================================================
 // Game ================================================================
 void play(int size);
-void move(snake* s, direction d);
+int move(snake* s, direction d, field* map);
 int collisions(field* map, snake* s1, snake* s2);
 
 // Input/Output ========================================================

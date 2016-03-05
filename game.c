@@ -55,58 +55,46 @@ void play(int size) {
     while(1){
         usleep(TIME_STEP * 1000);
 
-        // Input/Output management
-        if (kbhit()) {  // Check if user hits keyboard
-            c = getchar(); // Get input
+        // Input/Output management, choosing snake's direction
+        if (kbhit()) {          // Check if user hits keyboard
+            c = getchar();      // Get input
 
-            if(c == C_QUIT){
+            if(c == C_QUIT){                    //if user pushed quit button
                 normal_console();
                 free_all(map, s, schlanga);
-
                 return;
             }
         
-            // Move snake
-            if(key_is_dir(c)) {
-                cur_dir = key_to_dir(c);
+            if(key_is_dir(c)) {                 //if user pushed a direction
+                cur_dir = key_to_dir(c);        //retrieves the direction
 
                 //if the key pressed is the opposite direction of the snake
                 if(cur_dir == opposite(s->dir)){
-                    move(s, s->dir);    //then keep going
-                }
-                else{
-                    move(s, cur_dir);
+                    cur_dir = s->dir;
                 }
             }
         }
-        else {
-            move(s, s->dir);
+        else {                  //if user hasn't hit the keyboard
+            cur_dir = s->dir;
+        }
+
+        //move snake
+        if(move(s, cur_dir, map)){
+            free_all(map, s, schlanga);
+            normal_console();
+            print_msg(MSG_LOOSE);
+            return;
         }
         
-        // Move schlanga
-        cur_dir = AI_random_v3(schlanga, map);
-        move(schlanga, cur_dir);
+        // choose schlanga direction
+        cur_dir = rngesus2(schlanga, map);
 
-        // Collisions
-        switch(collisions(map, s, schlanga)){
-            case 0:     //no collisions
-                //display(map, s, schlanga);
-                break;
-            case SNAKE_DEAD:
-                normal_console();
-                print_msg(MSG_LOOSE);
-                free_all(map, s, schlanga);
-                return;
-            case SCHLANGA_DEAD:
-                normal_console();
-                print_msg(MSG_WIN);
-                free_all(map, s, schlanga);
-                return;
-            case BOTH_DEAD:
-                normal_console();
-                print_msg(MSG_DRAW);
-                free_all(map, s, schlanga);
-                return;
+        //move schlanga
+        if(move(schlanga, cur_dir, map)){
+            free_all(map, s, schlanga);
+            normal_console();
+            print_msg(MSG_WIN);
+            return;
         }
         
         fflush(stdout);
@@ -114,19 +102,22 @@ void play(int size) {
 }
 
 /**
-* \fn void move(snake* s, direction d);
+* \fn int move(snake* s, direction d, field* map);
 * \brief operates on a snake structure to make it move one step with the 'd'
 *        direction. This function does not protect the snake from going into its neck.
+*        This function also cares for collision management.
+* \return Number corresponding to an event : 0 if snake/schlanga moves peacefully
+*                                            1 if snake/schlanga dies
 */
-void move(snake* s, direction d) {
+int move(snake* s, direction d, field* map) {
+    //MOVING SNAKE
     //Will hold the old coordinates of the head and tail.
-    coord c_head = s->body[s->head];
-    coord c_tail = s->body[s->tail];
+    coord c_head = get_head_coord(s);
+    coord c_tail = get_tail_coord(s);
     
-    s->head = s->tail; // Index of head becomes index of tail.
+    s->head = get_tail(s); // Index of head becomes index of old tail.
                        // We then replace the coordinates of the old tail
                        // with the coordinates of the new head
-    s->tail = (s->head+1) % (s->size); // update index of tail
 
     // Updating snake's head coordinates
     s->dir = d;
@@ -144,71 +135,20 @@ void move(snake* s, direction d) {
         s->body[s->head].y = c_head.y;
     }
 
-    // Display
+    //DISPLAY
     print_to_pos(c_tail, ' ');
     print_to_pos(s->body[s->head], 's');
     
-    return;
-}
+    //COLLISIONS
+    if (get_square_at(map, get_head_coord(s)) != EMPTY) {
+        return 1;
+    }
+    
+    //UPDATE FIELD
+    set_square_at(map, get_head_coord(s), SNAKE);
+    set_square_at(map, get_tail_coord(s), EMPTY);
 
-/**
-* \fn int collisions(field* map, snake* s1, snake* s2);
-* \brief checks collision between objects in the field
-* \details As a result of the fixing of the data redundancy there was when the position
-*          of every snake part was also recorded in the 'field' variable, the collision
-*          checking becomes a bit more complex. But also more precise : now, you can
-*          know what killed a given snake.
-* \returns 0 if no collisions. 'SNAKE_DEAD', 'SCHLANGA_DEAD', 'BOTH_DEAD' (constants)
-*            in other cases.
-*/
-int collisions(field* map, snake* s1, snake* s2){
-    int i;
-    bool s1_dead = 0;
-    bool s2_dead = 0;
-
-    //snake1 collisions
-        //collision with wall
-    if (get_square_at(map, get_head_coord(s1)) == WALL){
-        s1_dead = 1;
-    }
-        //collision with snake2
-    for(i=0; i<s2->size; i++){
-        if( are_equal(get_head_coord(s1), s2->body[i]) ){
-            s1_dead = 1;
-        }
-    }
-        //colision with self body
-    for(i=0; i<s1->size; i++){
-        if(i == s1->head) continue;
-        if( are_equal(get_head_coord(s1), s1->body[i]) ){
-            s1_dead = 1;
-        }
-    }
-
-    //snake2 collisions
-        //collision with wall
-    if (get_square_at(map, get_head_coord(s2)) == WALL){
-        s2_dead = 1;
-    }
-        //collision with snake1
-    for(i=0; i<s1->size; i++){
-        if( are_equal(get_head_coord(s2), s1->body[i]) ){
-            s2_dead = 1;
-        }
-    }
-        //colision with self body
-    for(i=0; i<s2->size; i++){
-        if(i == s2->head) continue;
-        if( are_equal(get_head_coord(s2), s2->body[i]) ){
-            s2_dead = 1;
-        }
-    }
-
-    //returning
-    if(s1_dead && s2_dead)  return BOTH_DEAD;
-    else if(s2_dead)        return SCHLANGA_DEAD;
-    else if(s1_dead)        return SNAKE_DEAD;
-    else                    return 0;
+    return 0;
 }
 
 // Input/Output ========================================================
@@ -339,36 +279,3 @@ void print_msg(int msg){
             break;
     }
 }
-
-/**
-* \fn void display(field* map, snake* s1, snake* s2);
-* \brief Displays the map and the snakes. The printing mechanism is too slow and
-*        makes this function unusable.
-*/
-// void display(field* map, snake* s1, snake* s2){
-//     int a, b;
-
-//     //display field
-//     for(a = 0; a < map->height; a++){
-//         for(b = 0; b < map->width; b++){
-//             switch(map->f[a][b]){
-//                 case EMPTY:
-//                     print_to_pos(new_coord(a, b), ' ');
-//                     break;
-//                 case WALL:
-//                     print_to_pos(new_coord(a, b), '#');
-//                     break;
-//             }
-//         }
-//     }
-
-//     //display first snake
-//     for(a=0; a<s1->size; a++){
-//         print_to_pos(s1->body[a], 's');
-//     }
-
-//     //display second snake
-//     for(a=0; a<s2->size; a++){
-//         print_to_pos(s2->body[a], 's');
-//     }
-// }
