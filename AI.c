@@ -58,7 +58,8 @@ direction rngesus(snake* s){
 
 /**
 * \fn dir rngesus2(snake* s);
-* \brief chooses a direction to move randomly. With wall avoiding mechanism.
+* \brief chooses a direction to move randomly. With wall and snake
+*        avoiding mechanism.
 */
 direction rngesus2(snake* s, field* map){
     direction dir;
