@@ -175,6 +175,58 @@ direction opposite(direction d){
     }
 }
 
+
+/**
+* \fn direction opposite(direction d);
+* \return the direction to the left of 'd'
+*/
+direction turn_left(direction d){
+    switch(d){
+        case UP:
+            return LEFT;
+            break;
+        case DOWN:
+            return RIGHT;
+            break;
+        case LEFT:
+            return DOWN;
+            break;
+        case RIGHT:
+            return UP;
+            break;
+        default:
+            printf("in opposite() : Unrecognized dir\n");
+            exit(1);
+            break;
+    }
+}
+
+
+/**
+* \fn direction opposite(direction d);
+* \return the direction to the right of 'd'
+*/
+direction turn_right(direction d){
+    switch(d){
+        case UP:
+            return RIGHT;
+            break;
+        case DOWN:
+            return LEFT;
+            break;
+        case LEFT:
+            return UP;
+            break;
+        case RIGHT:
+            return DOWN;
+            break;
+        default:
+            printf("in opposite() : Unrecognized dir\n");
+            exit(1);
+            break;
+    }
+}
+
 /**
 * \fn square get_square_at(field* map, coord c);
 * \return the square at 'c' on 'map'
