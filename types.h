@@ -66,6 +66,8 @@ void free_all(field* map, snake* s1, snake* s2);
 // Objects managment ===================================================
 bool are_equal(coord c1, coord c2);
 direction opposite(direction d);
+direction turn_left(direction d);
+direction turn_right(direction d);
 square get_square_at(field* map, coord c);
 void set_square_at(field* map, coord c, square stuff);
 int get_tail(snake* s);
