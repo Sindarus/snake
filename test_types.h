@@ -15,6 +15,9 @@ bool test_new_snake();
 // Objects managment ===================================================
 bool test_are_equal();
 bool test_opposite();
+bool test_turn_left();
+bool test_turn_right();
+bool test_get_square_at();
 bool test_set_square_at();
 bool test_get_tail();
 bool test_get_head_coord();

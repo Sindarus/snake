@@ -5,8 +5,6 @@
 
 #include "test_types.h"
 
-
-// PROTOTYPES ==========================================================
 // Constructors ========================================================
 bool test_new_coord(){
     coord c1 = new_coord(1, 3);
@@ -110,8 +108,37 @@ bool test_opposite(){
     return 1;
 }
 
+bool test_turn_left(){
+    /*testing 'coord_after_dir()' would be equivalent to rewriting the function here,
+    running both the function and the rewritten function for a given set of parameters
+    and comparing the output. This is useless.*/
+    return 1;
+}
+
+bool test_turn_right(){
+    /*testing 'coord_after_dir()' would be equivalent to rewriting the function here,
+    running both the function and the rewritten function for a given set of parameters
+    and comparing the output. This is useless.*/
+    return 1;
+}
+
+bool test_get_square_at(){
+    field* map = new_field();
+
+    for (int i = 0; i < map->height; i++){
+        for (int j = 0; j < map->width; j++){
+            if(map->f[i][j] != get_square_at(map, new_coord(i, j))){
+                free_field(map);
+                return 0;
+            }
+        }
+    }
+
+    free_field(map);
+    return 1;
+}
+
 bool test_set_square_at(){
-    int i, j;
     field* map = new_field();
     for(int i=0; i<map->height; i++) {
         for (int j=0; j<map->width; j++) {
@@ -122,7 +149,57 @@ bool test_set_square_at(){
     return 1;
 }
 
-bool test_get_tail();
-bool test_get_head_coord();
-bool test_get_tail_coord();
-bool test_coord_after_dir();
+bool test_get_tail(){
+    field* map = new_field();
+    snake* s = new_snake(8, new_coord(1,1), map);
+
+    coord c = s->body[get_tail(s)];
+    if(map->f[c.x][c.y] != SNAKE){
+        free_snake(s);
+        free_field(map);
+        return 0;
+    }
+
+    free_snake(s);
+    free_field(map);
+    return 1;
+}
+
+bool test_get_head_coord(){
+    field* map = new_field();
+    snake* s = new_snake(8, new_coord(1,1), map);
+
+    coord c = get_head_coord(s);
+    if(map->f[c.x][c.y] != SNAKE){
+        free_snake(s);
+        free_field(map);
+        return 0;
+    }
+
+    free_snake(s);
+    free_field(map);
+    return 1;
+}
+
+bool test_get_tail_coord(){
+    field* map = new_field();
+    snake* s = new_snake(8, new_coord(1,1), map);
+
+    coord c = get_tail_coord(s);
+    if(map->f[c.x][c.y] != SNAKE){
+        free_snake(s);
+        free_field(map);
+        return 0;
+    }
+
+    free_snake(s);
+    free_field(map);
+    return 1;
+}
+
+bool test_coord_after_dir(){
+    /*testing 'coord_after_dir()' would be equivalent to rewriting the function here,
+    running both the function and the rewritten function for a given set of parameters
+    and comparing the output. This is useless.*/
+    return 1;
+}
