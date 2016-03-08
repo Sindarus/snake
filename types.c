@@ -178,7 +178,7 @@ direction opposite(direction d){
 
 
 /**
-* \fn direction opposite(direction d);
+* \fn direction turn_left(direction d);
 * \return the direction to the left of 'd'
 */
 direction turn_left(direction d){
@@ -196,7 +196,7 @@ direction turn_left(direction d){
             return UP;
             break;
         default:
-            printf("in opposite() : Unrecognized dir\n");
+            printf("in turn_left() : Unrecognized dir\n");
             exit(1);
             break;
     }
@@ -204,7 +204,7 @@ direction turn_left(direction d){
 
 
 /**
-* \fn direction opposite(direction d);
+* \fn direction turn_right(direction d);
 * \return the direction to the right of 'd'
 */
 direction turn_right(direction d){
@@ -222,7 +222,7 @@ direction turn_right(direction d){
             return DOWN;
             break;
         default:
-            printf("in opposite() : Unrecognized dir\n");
+            printf("in turn_right() : Unrecognized dir\n");
             exit(1);
             break;
     }
