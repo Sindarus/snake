@@ -42,27 +42,6 @@ coord new_coord_empty() {
 }
 
 /**
-* \fn snake* new_snake(int size, coord start_pos);
-* \brief Used to create a new variable of type 'snake'
-* \param size size of the snake
-* \returns a pointer to the newly created 'snake' variable
-*/
-snake* new_snake(int size, coord start_pos) {
-    snake* s = malloc(sizeof(snake));
-    int i;
-    s->body = malloc(size*sizeof(coord));
-    s->head = size-1;
-    s->size = size;
-    s->dir = UP;
-    for (i = size-1; i>=0; i--) {
-        s->body[i] = start_pos;  //at first, the snake fits in one square
-        print_to_pos(start_pos, 's');
-        start_pos.x++;
-    }
-    return s;
-}
-
-/**
 * \fn field* new_field();
 * \brief Used to create a new 'field'
 * \returns a pointer to the newly created 'field' variable
@@ -104,6 +83,28 @@ field* new_field() {
     }
 
     return map;
+}
+
+/**
+* \fn snake* new_snake(int size, coord start_pos, field* map);
+* \brief Used to create a new variable of type 'snake'
+* \param size size of the snake
+* \returns a pointer to the newly created 'snake' variable
+*/
+snake* new_snake(int size, coord start_pos, field* map) {
+    snake* s = malloc(sizeof(snake));
+    int i;
+    s->body = malloc(size*sizeof(coord));
+    s->head = size-1;
+    s->size = size;
+    s->dir = UP;
+    for (i = size-1; i>=0; i--) {
+        s->body[i] = start_pos;  //at first, the snake fits in one square
+        print_to_pos(start_pos, 's');
+        set_square_at(map, start_pos, SNAKE);
+        start_pos.x++;
+    }
+    return s;
 }
 
 // Destructors =========================================================

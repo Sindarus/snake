@@ -42,14 +42,13 @@ void play(int size) {
     //creating snakes
     coord start_pos = new_coord(map->height/2, map->width/5); // Starting position of snake depending on size of the window
     coord start_pos2 = new_coord(map->height/2, 4*map->width/5); // Starting position of snake depending on size of the window
-    snake* s = new_snake(size, start_pos); // Create snake with size 10 at start_pos on map
-    snake* schlanga = new_snake(size, start_pos2); // Create snake with size 10 at start_pos on map
+    snake* s = new_snake(size, start_pos, map); // Create snake with size 10 at start_pos on map
+    snake* schlanga = new_snake(size, start_pos2, map); // Create snake with size 10 at start_pos on map
     
     char c;         // key that is pressed
     direction cur_dir;
 
     mode_raw(1); // Disable display of user input
-    //display(map, s, schlanga);
 
     // Main loop
     while(1){

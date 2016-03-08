@@ -19,17 +19,12 @@
 #define MSG_WIN 2
 #define MSG_DRAW 3
 
-#define SNAKE_DEAD 1
-#define SCHLANGA_DEAD 2
-#define BOTH_DEAD 3
-
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 
 // PROTOTYPES ==========================================================
 // Game ================================================================
 void play(int size);
 int move(snake* s, direction d, field* map);
-int collisions(field* map, snake* s1, snake* s2);
 
 // Input/Output ========================================================
 int kbhit(void);

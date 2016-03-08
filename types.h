@@ -55,8 +55,8 @@ typedef struct field {
 // Constructors ========================================================
 coord new_coord(int x, int y);
 coord new_coord_empty();
-snake* new_snake(int size, coord start_pos);
 field* new_field();
+snake* new_snake(int size, coord start_pos, field* map);
 
 // Destructors =========================================================
 void free_snake(snake* s);
