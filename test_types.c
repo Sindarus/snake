@@ -109,14 +109,14 @@ bool test_opposite(){
 }
 
 bool test_turn_left(){
-    /*testing 'coord_after_dir()' would be equivalent to rewriting the function here,
+    /*testing 'test_turn_left()' would be equivalent to rewriting the function here,
     running both the function and the rewritten function for a given set of parameters
     and comparing the output. This is useless.*/
     return 1;
 }
 
 bool test_turn_right(){
-    /*testing 'coord_after_dir()' would be equivalent to rewriting the function here,
+    /*testing 'test_turn_right()' would be equivalent to rewriting the function here,
     running both the function and the rewritten function for a given set of parameters
     and comparing the output. This is useless.*/
     return 1;
