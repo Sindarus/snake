@@ -42,9 +42,9 @@ void play(int size) {
     //creating snakes
     coord start_pos = new_coord(map->height/2, map->width/5); // Starting position of snake depending on size of the window
     coord start_pos2 = new_coord(map->height/2, 4*map->width/5); // Starting position of snake depending on size of the window
-    snake* s = new_snake(size, start_pos, map); // Create snake with size 10 at start_pos on map
-    snake* schlanga = new_snake(size, start_pos2, map); // Create snake with size 10 at start_pos on map
-    
+    snake* s = new_snake(T_SNAKE, size, start_pos, map); // Create snake with size 10 at start_pos on map
+    snake* schlanga = new_snake(T_SCHLANGA, size, start_pos2, map); // Create snake with size 10 at start_pos on map
+
     char c;         // key that is pressed
     direction cur_dir;
 
@@ -63,7 +63,7 @@ void play(int size) {
                 free_all(map, s, schlanga);
                 return;
             }
-        
+
             if(key_is_dir(c)) {                 //if user pushed a direction
                 cur_dir = key_to_dir(c);        //retrieves the direction
 
@@ -84,7 +84,7 @@ void play(int size) {
             print_msg(MSG_LOOSE);
             return;
         }
-        
+
         // choose schlanga direction
         cur_dir = rngesus2(schlanga, map);
 
@@ -95,7 +95,7 @@ void play(int size) {
             print_msg(MSG_WIN);
             return;
         }
-        
+
         fflush(stdout);
     }//end while(1)
 }
@@ -113,7 +113,7 @@ int move(snake* s, direction d, field* map) {
     //Will hold the old coordinates of the head and tail.
     coord c_head = get_head_coord(s);
     coord c_tail = get_tail_coord(s);
-    
+
     s->head = get_tail(s); // Index of head becomes index of old tail.
                        // We then replace the coordinates of the old tail
                        // with the coordinates of the new head
@@ -136,15 +136,20 @@ int move(snake* s, direction d, field* map) {
 
     //DISPLAY
     print_to_pos(c_tail, ' ');
-    print_to_pos(s->body[s->head], 's');
-    
+    if(s->type == T_SNAKE){
+        print_to_pos(s->body[s->head], 's');
+    }
+    if(s->type == T_SCHLANGA){
+        print_to_pos(s->body[s->head], '$');
+    }
+
     //COLLISIONS
     if (get_square_at(map, get_head_coord(s)) != EMPTY) {
         return 1;
     }
-    
+
     //UPDATE FIELD
-    set_square_at(map, get_head_coord(s), SNAKE);
+    set_square_at(map, get_head_coord(s), s->type);
     set_square_at(map, get_tail_coord(s), EMPTY);
 
     return 0;
@@ -155,14 +160,14 @@ int move(snake* s, direction d, field* map) {
 * \fn int kbhit(void);
 * \brief Emulates kbhit() function on Windows which detects keyboard input
 */
-int kbhit(void) { 
-    struct timeval tv = { 0, 0 }; 
-    fd_set readfds; 
-  
-    FD_ZERO(&readfds); 
-    FD_SET(STDIN_FILENO, &readfds); 
-  
-    return select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv) == 1; 
+int kbhit(void) {
+    struct timeval tv = { 0, 0 };
+    fd_set readfds;
+
+    FD_ZERO(&readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+
+    return select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv) == 1;
 }
 
 /**
@@ -207,35 +212,37 @@ direction key_to_dir(char c){
 *          prints the 'c' param
 */
 void print_to_pos(coord pos, char c) {
+    #ifndef DO_NOT_DISPLAY
     printf("\033[%d;%dH%c", pos.x, pos.y, c);
+    #endif
 }
 
 /**
 * \fn void mode_raw(int activate);
 * \brief Use mode_raw(1) to disable displaying user input.
 */
-void mode_raw(int activate) 
-{ 
-    static struct termios cooked; 
-    static int raw_actif = 0; 
-  
-    if (raw_actif == activate) 
-        return; 
-  
-    if (activate) 
-    { 
-        struct termios raw; 
-  
-        tcgetattr(STDIN_FILENO, &cooked); 
-  
-        raw = cooked; 
-        cfmakeraw(&raw); 
-        tcsetattr(STDIN_FILENO, TCSANOW, &raw); 
-    } 
-    else 
+void mode_raw(int activate)
+{
+    static struct termios cooked;
+    static int raw_actif = 0;
+
+    if (raw_actif == activate)
+        return;
+
+    if (activate)
+    {
+        struct termios raw;
+
+        tcgetattr(STDIN_FILENO, &cooked);
+
+        raw = cooked;
+        cfmakeraw(&raw);
+        tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+    }
+    else
         tcsetattr(STDIN_FILENO, TCSANOW, &cooked);
-  
-    raw_actif = activate; 
+
+    raw_actif = activate;
 }
 
 /**

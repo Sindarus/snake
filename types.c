@@ -91,16 +91,25 @@ field* new_field() {
 * \param size size of the snake
 * \returns a pointer to the newly created 'snake' variable
 */
-snake* new_snake(int size, coord start_pos, field* map) {
+snake* new_snake(t_type type, int size, coord start_pos, field* map) {
     snake* s = malloc(sizeof(snake));
-    int i;
+
+    s->type = type;
     s->body = malloc(size*sizeof(coord));
     s->head = size-1;
     s->size = size;
     s->dir = UP;
+
+    int i;
     for (i = size-1; i>=0; i--) {
         s->body[i] = start_pos;  //at first, the snake fits in one square
-        print_to_pos(start_pos, 's');
+        if(s->type == T_SNAKE){
+            print_to_pos(start_pos, 's');
+        }
+        if(s->type == T_SCHLANGA){
+            print_to_pos(start_pos, '$');
+        }
+
         set_square_at(map, start_pos, SNAKE);
         start_pos.x++;
     }

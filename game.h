@@ -4,18 +4,18 @@
 #include "types.h"
 
 // CONSTANTS ============================================================
-#define C_UP 122		/** \def C_UP id number of key to move up. 122 = z 		*/
-#define C_DOWN 115		/** \def C_UP id number of key to move down. 115 = s 	*/
-#define C_LEFT 113		/** \def C_UP id number of key to move left. 113 = q 	*/
-#define C_RIGHT 100		/** \def C_UP id number of key to move right. 100 = d 	*/
-#define C_QUIT 27		/** \def C_UP id number of key to quit. 27 = <esc>		*/
+#define C_UP 122        /** \def C_UP id number of key to move up. 122 = z      */
+#define C_DOWN 115      /** \def C_UP id number of key to move down. 115 = s    */
+#define C_LEFT 113      /** \def C_UP id number of key to move left. 113 = q    */
+#define C_RIGHT 100     /** \def C_UP id number of key to move right. 100 = d   */
+#define C_QUIT 27       /** \def C_UP id number of key to quit. 27 = <esc>      */
 
 #define MIN_WINDOW_WIDTH 15
 #define MIN_WINDOW_HEIGHT 15
 
 #define TIME_STEP 150   /** \def TIME_STEP time between two time steps. In msec. */
 
-#define MSG_LOOSE 1		//used to replace inexpresive numbers by explicit constants
+#define MSG_LOOSE 1     //used to replace inexpresive numbers by explicit constants
 #define MSG_WIN 2
 #define MSG_DRAW 3
 

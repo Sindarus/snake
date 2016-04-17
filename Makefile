@@ -12,13 +12,16 @@ AI.o: AI.c game.h types.h
 game.o: game.c types.h AI.h
 	gcc -g -c game.c -Wall -Wextra
 
-types.o: types.c 
+game_with_no_display.o: game.c types.h AI.h
+	gcc -o game_with_no_display.o -g -c game.c -Wall -Wextra -DDO_NOT_DISPLAY
+
+types.o: types.c
 	gcc -g -c types.c -Wall -Wextra
 
 
 
-snake_test: main_test.o test_types.o types.o game.o AI.o
-	gcc -g main_test.o test_types.o types.o game.o AI.o -o snake_test
+snake_test: main_test.o test_types.o types.o game_with_no_display.o AI.o
+	gcc -g main_test.o test_types.o types.o game_with_no_display.o AI.o -o snake_test
 
 main_test.o: main_test.c test_types.h
 	gcc -g -c main_test.c -Wall -Wextra

@@ -52,7 +52,7 @@ bool test_new_field(){
 
 bool test_new_snake(){
     field* map = new_field();
-    snake* s = new_snake(6, new_coord(1, 1), map);
+    snake* s = new_snake(T_SNAKE, 6, new_coord(1, 1), map);
     int i;
 
     if(s->head != 5 || s->size != 6 ||
@@ -151,7 +151,7 @@ bool test_set_square_at(){
 
 bool test_get_tail(){
     field* map = new_field();
-    snake* s = new_snake(8, new_coord(1,1), map);
+    snake* s = new_snake(T_SNAKE, 8, new_coord(1,1), map);
 
     coord c = s->body[get_tail(s)];
     if(map->f[c.x][c.y] != SNAKE){
@@ -167,7 +167,7 @@ bool test_get_tail(){
 
 bool test_get_head_coord(){
     field* map = new_field();
-    snake* s = new_snake(8, new_coord(1,1), map);
+    snake* s = new_snake(T_SNAKE, 8, new_coord(1,1), map);
 
     coord c = get_head_coord(s);
     if(map->f[c.x][c.y] != SNAKE){
@@ -183,7 +183,7 @@ bool test_get_head_coord(){
 
 bool test_get_tail_coord(){
     field* map = new_field();
-    snake* s = new_snake(8, new_coord(1,1), map);
+    snake* s = new_snake(T_SNAKE, 8, new_coord(1,1), map);
 
     coord c = get_tail_coord(s);
     if(map->f[c.x][c.y] != SNAKE){

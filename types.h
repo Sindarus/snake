@@ -1,7 +1,7 @@
 #ifndef H_TYPES
 #define H_TYPES
 
-#include <stdbool.h>	//for 'bool' type
+#include <stdbool.h>    //for 'bool' type
 
 
 // STRUCTURES ==========================================================
@@ -10,8 +10,8 @@
 * \brief struct Represents a couple of coordinates.
 */
 typedef struct coord {
-	int x;
-	int y;
+    int x;
+    int y;
 } coord;
 
 /**
@@ -27,18 +27,25 @@ typedef enum {UP, DOWN, LEFT, RIGHT} direction;
 typedef enum {EMPTY, WALL, SNAKE, SCHLANGA} square;
 
 /**
+* \enum type
+* \brief type of a snake, can be either a snake or a schlanga.
+*/
+typedef enum {T_SNAKE=2, T_SCHLANGA=3} t_type;
+
+/**
 * \sctruct snake
 * \brief Represents a snake
 * \details 'body' is an array of 'coord'.
-* 		   'head' holds the index of the coordinates of the head in 'body'
-*		   'tail' holds the index of the coordinates of the tail in 'body'
-*		   'dir' is the direction the snake is currently moving.
+*          'head' holds the index of the coordinates of the head in 'body'
+*          'tail' holds the index of the coordinates of the tail in 'body'
+*          'dir' is the direction the snake is currently moving.
 */
 typedef struct snake {
-	int size;
-	int head;
-	coord* body;
-	direction dir;
+    t_type type;
+    int size;
+    int head;
+    coord* body;
+    direction dir;
 } snake;
 
 /**
@@ -46,9 +53,9 @@ typedef struct snake {
 * \brief Represents the arena on which the game is played
 */
 typedef struct field {
-	square** f;
-	int width;
-	int height;
+    square** f;
+    int width;
+    int height;
 } field;
 
 // PROTOTYPES ==========================================================
@@ -56,7 +63,7 @@ typedef struct field {
 coord new_coord(int x, int y);
 coord new_coord_empty();
 field* new_field();
-snake* new_snake(int size, coord start_pos, field* map);
+snake* new_snake(t_type type, int size, coord start_pos, field* map);
 
 // Destructors =========================================================
 void free_snake(snake* s);
