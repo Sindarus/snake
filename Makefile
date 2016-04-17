@@ -1,30 +1,33 @@
+CC = gcc
+CFLAGS = -g -Wall -Wextra
+
 all: snake snake_test
 
 snake: game.o main.o types.o game.o AI.o
-	gcc -g types.o game.o AI.o main.o -o snake
+	$(CC) $(CFLAGS) types.o game.o AI.o main.o -o snake
 
 main.o: main.c game.h
-	gcc -g -c main.c -Wall -Wextra
+	$(CC) $(CFLAGS) -c main.c
 
 AI.o: AI.c game.h types.h
-	gcc -g -c AI.c -Wall -Wextra
+	$(CC) $(CFLAGS) -c AI.c
 
 game.o: game.c types.h AI.h
-	gcc -g -c game.c -Wall -Wextra
+	$(CC) $(CFLAGS) -c game.c
 
 game_with_no_display.o: game.c types.h AI.h
-	gcc -o game_with_no_display.o -g -c game.c -Wall -Wextra -DDO_NOT_DISPLAY
+	$(CC) -c game.c -DDO_NOT_DISPLAY -o game_with_no_display.o
 
 types.o: types.c
-	gcc -g -c types.c -Wall -Wextra
+	$(CC) $(CFLAGS) -c types.c
 
 
 
 snake_test: main_test.o test_types.o types.o game_with_no_display.o AI.o
-	gcc -g main_test.o test_types.o types.o game_with_no_display.o AI.o -o snake_test
+	$(CC) $(CFLAGS) main_test.o test_types.o types.o game_with_no_display.o AI.o -o snake_test
 
 main_test.o: main_test.c test_types.h
-	gcc -g -c main_test.c -Wall -Wextra
+	$(CC) $(CFLAGS) -c main_test.c
 
 test_types.o: test_types.c test_types.h types.h
-	gcc -g -c test_types.c -Wall -Wextra
+	$(CC) $(CFLAGS) -c test_types.c
