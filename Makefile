@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -Wall -Wextra
 
-all: snake snake_test
+all: snake snake_test clean
 
 snake: game.o main.o types.o game.o AI.o
 	$(CC) $(CFLAGS) types.o game.o AI.o main.o -o snake
@@ -31,3 +31,6 @@ main_test.o: main_test.c test_types.h
 
 test_types.o: test_types.c test_types.h types.h
 	$(CC) $(CFLAGS) -c test_types.c
+
+clean :
+	@rm -f *.o
