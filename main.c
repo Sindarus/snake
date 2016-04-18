@@ -1,6 +1,6 @@
-/*
-    \file main.c
-    \brief Entry point of the program
+/**
+* \file main.c
+* \brief Entry point of the program
 */
 
 #include <stdio.h>          //for 'printf()'
@@ -10,9 +10,9 @@
 
 #include "game.h"
 
-/*
-    \fn void about();
-    \brief Displays info about the program
+/**
+* \fn void about();
+* \brief Displays info about the program
 */
 void about(){
     printf("This game has been developped by : \n");

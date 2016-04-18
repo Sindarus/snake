@@ -1,10 +1,10 @@
-/*
-    \file game.c
-    \brief Functions related to the game
-    \details This file is separated in 3 parts :
-             1 - functions related to the game per se
-             2 - functions related to input/output management
-             3 - functions related to the display
+/**
+* \file game.c
+* \brief Functions related to the game
+* \details This file is separated in 3 parts :
+*          1 - functions related to the game per se
+*          2 - functions related to input/output management
+*          3 - functions related to the display
 */
 
 #include <stdbool.h>        //for 'bool' type

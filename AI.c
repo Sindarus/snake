@@ -1,9 +1,9 @@
-/*
-    \file AI.c
-    \brief Functions related to AI.
-    \details This file is separated in 2 parts :
-             1 - functions that are used by an AI main function
-             2 - AI main function : they have to return the choosen direction to go.
+/**
+* \file AI.c
+* \brief Functions related to AI.
+* \details This file is separated in 2 parts :
+*          1 - functions that are used by an AI main function
+*          2 - AI main function : they have to return the choosen direction to go.
 */
 
 #include <stdlib.h>     //for 'rand()'
@@ -43,7 +43,7 @@ int detect(snake* s, direction c, field* map){
 *          repicks a direction, and so on... No wall avoiding.
 *          You may have noticed that we affect an int to 'd' which is
 *          a direction. That's possible because behind every enumeration
-*          lies an int. 'UP' is in fact 0, 'DOWN' is in fact 1 ... etc 
+*          lies an int. 'UP' is in fact 0, 'DOWN' is in fact 1 ... etc
 * \returns direction choosen
 */
 direction rngesus(snake* s){
@@ -57,7 +57,7 @@ direction rngesus(snake* s){
 }
 
 /**
-* \fn dir rngesus2(snake* s);
+* \fn direction rngesus2(snake* s, field* map);
 * \brief chooses a direction to move randomly. With wall and snake
 *        avoiding mechanism.
 */

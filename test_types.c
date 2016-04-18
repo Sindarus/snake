@@ -146,6 +146,7 @@ bool test_set_square_at(){
             if(map->f[i][j] != WALL) return 0;
         }
     }
+    free_field(map);
     return 1;
 }
 

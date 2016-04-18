@@ -3,6 +3,9 @@
 
 #include "test_types.h"
 
+/**
+* \brief Runs 'fn' and prints an appropriate message on screen
+*/
 bool test_function(bool (*fn)(), char* s){
     if( (*fn)() ){
         printf("OK : %s()\n", s);
@@ -33,9 +36,7 @@ int main(){
     test_function(&test_get_tail_coord, "test_get_tail_coord");
     test_function(&test_coord_after_dir, "test_coord_after_dir");
 
-    printf("========== TEST GAME ========================================\n");
-
-
+    //printf("========== TEST GAME ========================================\n");
     //test_function(&, "");
     //test_function(&, "");
     //test_function(&, "");
