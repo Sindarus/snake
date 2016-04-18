@@ -151,13 +151,32 @@ int move(snake* s, direction d, field* map) {
     }
 
     //COLLISIONS
-    if (get_square_at(map, get_head_coord(s)) != EMPTY) {
+    square temp_square = get_square_at(map, get_head_coord(s));
+    if (temp_square != EMPTY) {
         return 1;
+        // switch(temp_square){
+        //     case WALL:
+        //         //write(2, "hit a wall\n", 11*sizeof(char));
+        //         return 1;
+        //         break;
+        //     case SCHLANGA:
+        //         //write(2, "hit schlanga\n", 13*sizeof(char));
+        //         return 1;
+        //         break;
+        //     case SNAKE:
+        //         //write(2, "hit snake\n", 10*sizeof(char));
+        //         return 1;
+        //         break;
+        //     default:
+        //         //write(2, "hit ???\n", 7*sizeof(char));
+        //         return 1;
+        //         break;
+        // }
     }
 
     //UPDATE FIELD
     set_square_at(map, get_head_coord(s), s->type);
-    set_square_at(map, get_tail_coord(s), EMPTY);
+    set_square_at(map, c_tail, EMPTY);
 
     return 0;
 }
