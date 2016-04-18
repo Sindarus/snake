@@ -3,8 +3,6 @@
 
 #include "types.h"
 
-#define DO_NOT_DISPLAY
-
 // PROTOTYPES ==========================================================
 // Constructors ========================================================
 bool test_new_coord();

@@ -1,10 +1,14 @@
+/**
+* \file AI.h
+*/
+
 #ifndef H_AI
 #define H_AI
 
 // CONSTANTS ============================================================
-#define IA_MAX_PICK 20 /** \def IA_MAX_PICK maximum times that the IA tries
-							   picking a random direction before giving up.
-							   Used to avoid infinite picking.*/
+#define IA_MAX_PICK 20 /**< maximum times that the IA tries
+                            picking a random direction before giving up.
+                            Used to avoid infinite picking.*/
 
 // PROTOTYPES ==========================================================
 // Helpers =============================================================

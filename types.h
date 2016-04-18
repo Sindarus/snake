@@ -1,54 +1,65 @@
+/**
+* \file types.h
+*/
+
 #ifndef H_TYPES
 #define H_TYPES
 
-#include <stdbool.h>	//for 'bool' type
+#include <stdbool.h>    //for 'bool' type
 
 
 // STRUCTURES ==========================================================
 /**
-* \struct coord
+* \typedef coord
 * \brief struct Represents a couple of coordinates.
 */
 typedef struct coord {
-	int x;
-	int y;
+    int x;  /**< x coordinate */
+    int y;  /**< y coordinate */
 } coord;
 
 /**
-* \enum direction
+* \typedef direction
 * \brief Allows to use the four main directions.
 */
 typedef enum {UP, DOWN, LEFT, RIGHT} direction;
 
 /**
-* \enum square
+* \typedef square
 * \brief Gathers the possible content of a square of the field.
 */
-typedef enum {EMPTY, WALL, SNAKE, SCHLANGA} square;
+typedef enum {EMPTY, WALL, SNAKE, SCHLANGA, POPWALL, HIGHSPEED} square;
 
 /**
-* \sctruct snake
+* \typedef t_type
+* \brief type of a snake, can be either a snake or a schlanga.
+*/
+typedef enum {T_SNAKE=2, T_SCHLANGA=3} t_type;
+
+/**
+* \typedef snake
 * \brief Represents a snake
 * \details 'body' is an array of 'coord'.
-* 		   'head' holds the index of the coordinates of the head in 'body'
-*		   'tail' holds the index of the coordinates of the tail in 'body'
-*		   'dir' is the direction the snake is currently moving.
+*          'head' holds the index of the coordinates of the head in 'body'
+*          'tail' holds the index of the coordinates of the tail in 'body'
+*          'dir' is the direction the snake is currently moving.
 */
 typedef struct snake {
-	int size;
-	int head;
-	coord* body;
-	direction dir;
+    t_type type;    /**< type of snake, can be 'SCHLANGA' or 'SNAKE' */
+    int size;       /**< size of snake */
+    coord* body;    /**< array containing the coords of every part of the snake*/
+    int head;       /**< current index of the head in the body array */
+    direction dir;  /**< current direction the snake is faceing */
 } snake;
 
 /**
-* \sctruct field
+* \typedef field
 * \brief Represents the arena on which the game is played
 */
 typedef struct field {
-	square** f;
-	int width;
-	int height;
+    square** f;     /**< 2D array representing the field*/
+    int width;      /**< width of the field */
+    int height;     /**< height of the field */
 } field;
 
 // PROTOTYPES ==========================================================
@@ -56,7 +67,7 @@ typedef struct field {
 coord new_coord(int x, int y);
 coord new_coord_empty();
 field* new_field();
-snake* new_snake(int size, coord start_pos, field* map);
+snake* new_snake(t_type type, int size, coord start_pos, field* map);
 
 // Destructors =========================================================
 void free_snake(snake* s);

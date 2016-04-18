@@ -1,10 +1,10 @@
-/*
-    \file types.c
-    \brief Functions related to types used in other files.
-    \details This file is separated in 3 parts :
-             1 - functions that help you create variables of a certain structure type
-             2 - functions that help you free the memory used by the structures
-             3 - functions that help you operate on the structures
+/**
+* \file types.c
+* \brief Functions related to types used in other files.
+* \details This file is separated in 3 parts :
+*          1 - functions that help you create variables of a certain structure type
+*          2 - functions that help you free the memory used by the structures
+*          3 - functions that help you operate on the structures
 */
 
 #include <stdio.h>      //for 'printf()'
@@ -86,21 +86,29 @@ field* new_field() {
 }
 
 /**
-* \fn snake* new_snake(int size, coord start_pos, field* map);
+* \fn snake* new_snake(t_type type, int size, coord start_pos, field* map);
 * \brief Used to create a new variable of type 'snake'
-* \param size size of the snake
 * \returns a pointer to the newly created 'snake' variable
 */
-snake* new_snake(int size, coord start_pos, field* map) {
+snake* new_snake(t_type type, int size, coord start_pos, field* map) {
     snake* s = malloc(sizeof(snake));
-    int i;
+
+    s->type = type;
     s->body = malloc(size*sizeof(coord));
     s->head = size-1;
     s->size = size;
     s->dir = UP;
+
+    int i;
     for (i = size-1; i>=0; i--) {
         s->body[i] = start_pos;  //at first, the snake fits in one square
-        print_to_pos(start_pos, 's');
+        if(s->type == T_SNAKE){
+            print_to_pos(start_pos, 's');
+        }
+        if(s->type == T_SCHLANGA){
+            print_to_pos(start_pos, '$');
+        }
+
         set_square_at(map, start_pos, SNAKE);
         start_pos.x++;
     }
@@ -118,7 +126,7 @@ void free_snake(snake* s){
 }
 
 /**
-* \fn void free_snake(snake* s);
+* \fn void free_field(field* map);
 * \brief Used to free memory used by the 'map' field
 */
 void free_field(field* map){
