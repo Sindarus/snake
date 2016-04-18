@@ -6,4 +6,4 @@ snake
 *.o
 *.log
 snake_test
-
+/documentation/*

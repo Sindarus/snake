@@ -92,7 +92,7 @@ void play(int size) {
         }
 
         // choose schlanga direction
-        cur_dir = rngesus2(schlanga,map);
+        cur_dir = spread(schlanga,map);
 
         //move schlanga
         if(move(schlanga, cur_dir, map)){
@@ -263,15 +263,15 @@ void print_to_pos(coord pos, char c) {
 /**
 * \fn void mode_raw(int activate);
 * \brief Use mode_raw(1) to enable raw mode, mode_raw(0) to disable.
-         See detailed description for more info.
+*        See detailed description for more info.
 * \details When you call 'mode_raw(1)', the terminal switches into raw mode, if it was
-           not already. Cursor is hidden. User input is hidden. User input is
-           readable with a call to 'read()' without the user having to press "enter".
-           The call to 'read()' is not blocking, and it will return 0 if there was
-           less characters to read in the buffer than the requested number.
-           When you call 'mode_raw(0)', STDIN will be flushed, the cursor will show
-           again, and the terminal will switch back to it's original state,
-           whatever it was.
+*          not already. Cursor is hidden. User input is hidden. User input is
+*          readable with a call to 'read()' without the user having to press "enter".
+*          The call to 'read()' is not blocking, and it will return 0 if there was
+*          less characters to read in the buffer than the requested number.
+*          When you call 'mode_raw(0)', STDIN will be flushed, the cursor will show
+*          again, and the terminal will switch back to it's original state,
+*          whatever it was.
 */
 void mode_raw(int activate)
 {
