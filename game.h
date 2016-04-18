@@ -23,12 +23,15 @@
 #define MSG_WIN 2
 #define MSG_DRAW 3
 
+#define NB_ITEMS 2
+
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 
 // PROTOTYPES ==========================================================
 // Game ================================================================
 void play(int size);
 int move(snake* s, direction d, field* map);
+void pop_item(field* map);
 
 // Input/Output ========================================================
 int kbhit(void);
