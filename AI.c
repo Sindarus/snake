@@ -7,7 +7,7 @@
 */
 
 #include <stdlib.h>     //for 'rand()'
-
+#include <stdbool.h>
 #include "types.h"
 
 #include "AI.h"
@@ -72,5 +72,83 @@ direction rngesus2(snake* s, field* map){
                 && pick_counter < IA_MAX_PICK);
 
     return dir;
+}
+
+bool not_in(coord c, coord* tableau, int taille){
+    int i;
+    for(i=0;i<taille;i++){
+        if (are_equal(c,tableau[i])){
+            return false;
+        }
+    }
+    return true;
+}
+
+direction spread(snake* s,field* map){
+    coord tableft[(map->width)*(map->height)];
+    coord tabright[(map->width)*(map->height)];
+    coord tabup[(map->width)*(map->height)];
+    coord tabdown[(map->width)*(map->height)];
+
+    coord start=(s->body[s->head]);
+    coord u=coord_after_dir(start,UP);
+    coord d=coord_after_dir(start,DOWN);
+    coord l=coord_after_dir(start,LEFT);
+    coord r=coord_after_dir(start,RIGHT);
+
+    int a1,a2,a3,a4;
+
+    int rec(field* map, coord c, coord* tableau, int i){
+        coord up=coord_after_dir(c,UP);
+        coord down=coord_after_dir(c,DOWN);
+        coord left=coord_after_dir(c,LEFT);
+        coord right=coord_after_dir(c,RIGHT);
+
+        if ( get_square_at(map,up) == EMPTY && not_in(up,tableau,i)){
+            tableau[i]=up;
+            i++;
+            rec(map,up,tableau,i);
+        }
+        else if ( get_square_at(map,right) == EMPTY && not_in(right,tableau,i)){
+            tableau[i]=right;
+            i++;
+            rec(map,right,tableau,i);
+        }
+        else if ( get_square_at(map,down) == EMPTY && not_in(down,tableau,i)){
+            tableau[i]=down;
+            i++;
+            rec(map,down,tableau,i);
+        }
+        else if ( get_square_at(map,left) == EMPTY && not_in(left,tableau,i)){
+            tableau[i]=left;
+            i++;
+            rec(map,left,tableau,i);
+        }
+        else{
+            return i;
+        }
+    }
+
+    a1=rec(map,l,tableft,0);
+    a2=rec(map,r,tabright,0);
+    a3=rec(map,d,tabdown,0);
+    a4=rec(map,u,tabup,0);
+
+    if (a1>a2 && a1>a3 && a1>a4){
+        return LEFT;
+    }
+    else if (a2>a1 && a2>a3 && a2>a4){
+        return RIGHT;
+    }
+    else if (a3>a2 && a3>a1 && a3>a4){
+        return DOWN;
+    }
+    else if (a4>a2 && a4>a1 && a4>a3){
+        return UP;
+    }
+    else {
+        return rngesus2(s,map);
+    }
+
 }
 

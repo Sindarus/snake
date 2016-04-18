@@ -86,7 +86,7 @@ void play(int size) {
         }
         
         // choose schlanga direction
-        cur_dir = rngesus2(schlanga, map);
+        cur_dir = rngesus2(schlanga,map);
 
         //move schlanga
         if(move(schlanga, cur_dir, map)){

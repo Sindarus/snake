@@ -9,9 +9,12 @@
 // PROTOTYPES ==========================================================
 // Helpers =============================================================
 int detect(snake* s, direction c, field* map);
+bool not_in(coord c, coord* tableau, int taille);
 
 // AI main functions ===================================================
 direction rngesus(snake* s);
 direction rngesus2(snake* s, field* map);
+direction spread(snake* s,field* map);
+
 
 #endif
