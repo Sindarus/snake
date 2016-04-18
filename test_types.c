@@ -124,9 +124,9 @@ bool test_turn_right(){
 
 bool test_get_square_at(){
     field* map = new_field();
-
-    for (int i = 0; i < map->height; i++){
-        for (int j = 0; j < map->width; j++){
+    int i,j;
+    for (i = 0; i < map->height; i++){
+        for (j = 0; j < map->width; j++){
             if(map->f[i][j] != get_square_at(map, new_coord(i, j))){
                 free_field(map);
                 return 0;
@@ -139,9 +139,9 @@ bool test_get_square_at(){
 }
 
 bool test_set_square_at(){
-    field* map = new_field();
-    for(int i=0; i<map->height; i++) {
-        for (int j=0; j<map->width; j++) {
+    field* map = new_field();int i,j;
+    for(i=0; i<map->height; i++) {
+        for (j=0; j<map->width; j++) {
             set_square_at(map, new_coord(i, j), WALL);
             if(map->f[i][j] != WALL) return 0;
         }
