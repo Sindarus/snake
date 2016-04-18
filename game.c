@@ -155,6 +155,37 @@ int move(snake* s, direction d, field* map) {
     return 0;
 }
 
+// Items ===============================================================
+/**
+* \fn void pop_item(field* map);
+* \brief adds a random item to the field.
+*/
+void pop_item(field* map) {
+	coord pos_item;
+	square item;
+	int dir = rand() % NB_ITEMS;
+	
+	do {
+		pos_item = new_coord(rand() % map->height, rand() % map->width);
+	} while (get_square_at(map, pos_item) == EMPTY);
+	
+	switch (dir) {
+		case 0:
+			item = POPWALL;
+			break;
+		case 1:
+			item = HIGHSPEED;
+			break;
+		default:
+			item = -1;
+			break;
+	}
+	
+	if (item > 0) {
+		set_square_at(map, pos_item, item);
+	}	
+}
+
 // Input/Output ========================================================
 /**
 * \fn int kbhit(void);

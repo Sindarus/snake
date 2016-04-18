@@ -28,7 +28,7 @@ typedef enum {UP, DOWN, LEFT, RIGHT} direction;
 * \typedef square
 * \brief Gathers the possible content of a square of the field.
 */
-typedef enum {EMPTY, WALL, SNAKE, SCHLANGA} square;
+typedef enum {EMPTY, WALL, SNAKE, SCHLANGA, POPWALL, HIGHSPEED} square;
 
 /**
 * \typedef t_type
@@ -59,7 +59,7 @@ typedef struct snake {
 typedef struct field {
     square** f;     /**< 2D array representing the field*/
     int width;      /**< width of the field */
-    int height;     /**< width of the field */
+    int height;     /**< height of the field */
 } field;
 
 // PROTOTYPES ==========================================================
