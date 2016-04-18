@@ -129,10 +129,14 @@ direction spread(snake* s,field* map){
         }
     }
 
-    a1=rec(map,l,tableft,0);
-    a2=rec(map,r,tabright,0);
-    a3=rec(map,d,tabdown,0);
-    a4=rec(map,u,tabup,0);
+    if (get_square_at(map,l) == EMPTY){a1=rec(map,l,tableft,0);}
+    else{a1=0;}
+    if (get_square_at(map,r) == EMPTY){a2=rec(map,r,tabright,0);}
+    else{a2=0;}
+    if (get_square_at(map,d) == EMPTY){a3=rec(map,d,tabdown,0);}
+    else{a3=0;}
+    if (get_square_at(map,u) == EMPTY){a4=rec(map,u,tabup,0);}
+    else{a4=0;}
 
     if (a1>a2 && a1>a3 && a1>a4){
         return LEFT;
