@@ -61,6 +61,7 @@ void play(int size) {
         if(ret != 0){          // Check if user hits keyboard
             if(c == C_QUIT){                    //if user pushed quit button
                 mode_raw(0);
+                clear();
                 free_all(map, s, schlanga);
                 return;
             }
