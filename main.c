@@ -7,6 +7,7 @@
 #include <stdlib.h>         //for 'srand()'
 #include <unistd.h>         //for 'usleep()'
 #include <time.h>           //for 'time()'
+#include <signal.h>         //for 'SIGINT' and 'signal()'
 
 #include "game.h"
 
@@ -23,14 +24,23 @@ void about(){
 }
 
 /**
+* \fn void quit();
+* \brief safely quits
+*/
+void quit(){
+    clear();
+    mode_raw(0);
+    exit(1);
+}
+
+/**
 * \fn int main();
-* \brief Ain'tcha ever seen a main function ?
+* \brief Entry point of the program.
 */
 int main(){
-    // FILE* fp;
-    // fp = fopen("output.log", "w");
-    // close(fp)
+    signal(SIGINT, quit);
 
+    clear();
     srand(time(NULL));
     printf("==================================\n");
     printf("||          MAC² SNAKE          ||\n");
@@ -48,7 +58,11 @@ int main(){
         printf("0 - Quit game\n");
         printf("1 - Play\n");
         printf("2 - About this program\n");
-        scanf("%i", &choix);
+        printf("Please enter your choice.\n");
+        if(scanf("%i", &choix) == 0){
+            printf("Menu error\n");
+            exit(1);
+        }
         switch(choix){
             case 0:
                 ok = 1; printf("Good bye !\n");

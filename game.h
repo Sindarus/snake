@@ -41,7 +41,6 @@ direction key_to_dir(char c);
 // Display =============================================================
 void print_to_pos(coord pos, char c);
 void mode_raw(int activate);
-void normal_console();
 void print_msg(int msg);
 //void display(field* map, snake* s1, snake* s2);
 

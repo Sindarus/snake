@@ -27,9 +27,7 @@
 *          the passing of the time, the collision management and so on.
 */
 void play(int size) {
-    clear(); // Clear screen
-    printf("\e[?25l"); // Hide cursor
-
+    clear();
     //creating field
     field* map = new_field();
     if (size > map->height/2) {
@@ -46,20 +44,23 @@ void play(int size) {
     snake* schlanga = new_snake(T_SCHLANGA, size, start_pos2, map); // Create snake with size 10 at start_pos on map
 
     char c;         // key that is pressed
+    int ret;
     direction cur_dir;
 
-    mode_raw(1); // Disable display of user input
+    mode_raw(1);
 
     // Main loop
     while(1){
         usleep(TIME_STEP * 1000);
 
         // Input/Output management, choosing snake's direction
-        if (kbhit()) {          // Check if user hits keyboard
-            c = getchar();      // Get input
-
+        if( (ret = read(0, &c, sizeof(char))) == -1){
+            perror("read in 'play()'");
+            exit(1);
+        }
+        if(ret != 0){          // Check if user hits keyboard
             if(c == C_QUIT){                    //if user pushed quit button
-                normal_console();
+                mode_raw(0);
                 free_all(map, s, schlanga);
                 return;
             }
@@ -72,6 +73,9 @@ void play(int size) {
                     cur_dir = s->dir;
                 }
             }
+            else{
+                cur_dir = s->dir;
+            }
         }
         else {                  //if user hasn't hit the keyboard
             cur_dir = s->dir;
@@ -80,18 +84,20 @@ void play(int size) {
         //move snake
         if(move(s, cur_dir, map)){
             free_all(map, s, schlanga);
-            normal_console();
+            mode_raw(0);
+            clear();
             print_msg(MSG_LOOSE);
             return;
         }
 
         // choose schlanga direction
-        cur_dir = spread(schlanga,map);
+        cur_dir = rngesus2(schlanga,map);
 
         //move schlanga
         if(move(schlanga, cur_dir, map)){
             free_all(map, s, schlanga);
-            normal_console();
+            mode_raw(0);
+            clear();
             print_msg(MSG_WIN);
             return;
         }
@@ -161,46 +167,32 @@ int move(snake* s, direction d, field* map) {
 * \brief adds a random item to the field.
 */
 void pop_item(field* map) {
-	coord pos_item;
-	square item;
-	int dir = rand() % NB_ITEMS;
-	
-	do {
-		pos_item = new_coord(rand() % map->height, rand() % map->width);
-	} while (get_square_at(map, pos_item) == EMPTY);
-	
-	switch (dir) {
-		case 0:
-			item = POPWALL;
-			break;
-		case 1:
-			item = HIGHSPEED;
-			break;
-		default:
-			item = -1;
-			break;
-	}
-	
-	if (item > 0) {
-		set_square_at(map, pos_item, item);
-	}	
+    coord pos_item;
+    square item;
+    int dir = rand() % NB_ITEMS;
+
+    do {
+        pos_item = new_coord(rand() % map->height, rand() % map->width);
+    } while (get_square_at(map, pos_item) == EMPTY);
+
+    switch (dir) {
+        case 0:
+            item = POPWALL;
+            break;
+        case 1:
+            item = HIGHSPEED;
+            break;
+        default:
+            item = -1;
+            break;
+    }
+
+    if (item > 0) {
+        set_square_at(map, pos_item, item);
+    }
 }
 
 // Input/Output ========================================================
-/**
-* \fn int kbhit(void);
-* \brief Emulates kbhit() function on Windows which detects keyboard input
-*/
-int kbhit(void) {
-    struct timeval tv = { 0, 0 };
-    fd_set readfds;
-
-    FD_ZERO(&readfds);
-    FD_SET(STDIN_FILENO, &readfds);
-
-    return select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv) == 1;
-}
-
 /**
 * \fn bool key_is_dir(char c);
 * \return 1 if the given char 'c' corresponds to a direction key. 0 otherwise.
@@ -250,41 +242,67 @@ void print_to_pos(coord pos, char c) {
 
 /**
 * \fn void mode_raw(int activate);
-* \brief Use mode_raw(1) to disable displaying user input.
+* \brief Use mode_raw(1) to enable raw mode, mode_raw(0) to disable.
+         See detailed description for more info.
+* \details When you call 'mode_raw(1)', the terminal switches into raw mode, if it was
+           not already. Cursor is hidden. User input is hidden. User input is
+           readable with a call to 'read()' without the user having to press "enter".
+           The call to 'read()' is not blocking, and it will return 0 if there was
+           less characters to read in the buffer than the requested number.
+           When you call 'mode_raw(0)', STDIN will be flushed, the cursor will show
+           again, and the terminal will switch back to it's original state,
+           whatever it was.
 */
 void mode_raw(int activate)
 {
-    static struct termios cooked;
-    static int raw_actif = 0;
+    //"static" variables are inited only once, and then shared between calls of this function.
+    static bool first_run = true;       //1 if this is the first time this function is run
+    static bool raw_activated = false;  //true if the raw mode is activated
+    static struct termios term_save;    //configuration to apply to have the terminal back to its initial mode
+    static struct termios term_raw;     //configuration to apply to have raw-mode
 
-    if (raw_actif == activate)
-        return;
+    char trash;     //we need this variable to flush STDIN
 
-    if (activate)
-    {
-        struct termios raw;
+    //PREPARING NEEDED
+    if(first_run){
+        first_run = false;
 
-        tcgetattr(STDIN_FILENO, &cooked);
+        //in this block, we build 'term_save' and 'term_raw' once and for all
+        //BUILDING 'term_save'
+        tcgetattr(STDIN_FILENO, &term_save);    //save the current terminal config.
 
-        raw = cooked;
-        cfmakeraw(&raw);
-        tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+        //BUILDING 'term_raw'
+        term_raw = term_save;
+
+        //the line "flags &= ~flag" has the effect of removing 'flag' from 'flags'
+        term_raw.c_lflag &= ~ICANON;        //set non-canonical mode (see termios(3))
+        term_raw.c_lflag &= ~ECHO;          //do not echo user input !
+
+        //make 'read()' a "polling read" (see termios(3))
+        term_raw.c_cc[VMIN] = 0;
+        term_raw.c_cc[VTIME] = 0;
     }
-    else
-        tcsetattr(STDIN_FILENO, TCSANOW, &cooked);
 
-    raw_actif = activate;
-}
+    //BULK OF THE FUNCTION :
+    if(activate){   //the user wants to activate the raw mode
+        if(raw_activated) return;   //if it's already activated, then do nothing
 
-/**
-* \fn void normal_console()
-* \brief Gets the console back to normal : user input is displayed and the cursor
-*        is back.
-*/
-void normal_console(){
-    mode_raw(0);        //activates displaying user input
-    clear();
-    printf("\e[?25h");  //unhide cursor
+        tcsetattr(STDIN_FILENO, TCSANOW, &term_raw); //apply raw-mode configuration
+        printf("\e[?25l"); // Hide cursor
+
+        raw_activated = true;
+    }
+    else{           //the user wants to disactivate the raw mode
+        if(!raw_activated) return;  //if it was not activated, then do nothing
+
+        //flush STDIN
+        while(read(0, &trash, sizeof(char)) != 0){}
+
+        tcsetattr(STDIN_FILENO, TCSANOW, &term_save); //apply original configuration
+        printf("\e[?25h");  //unhide cursor
+
+        raw_activated = false;
+    }
 }
 
 /**
@@ -292,7 +310,7 @@ void normal_console(){
 * \brief prints a specific message onto the screen.
 * \param msg Can be one of thoses : MSG_LOOSE, MSG_WIN or MSG_DRAW
 * \details Warning : console has to be working in the usual way for theses messages
-*          to be printed correctly. Use 'normal_console()' to get the console back
+*          to be printed correctly. Use 'mode_raw(0)' to get the console back
 *          back to normal.
 */
 void print_msg(int msg){
