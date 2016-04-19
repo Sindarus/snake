@@ -76,6 +76,10 @@ direction rngesus2(snake* s, field* map){
     return dir;
 }
 
+/*
+* \fn bool not_in(coord c, coord* tableau, int taille);
+* \brief Return true if the 'c' coord is in the array 'tableau' (of length 'taille'). Else return false.
+*/
 bool not_in(coord c, coord* tableau, int taille){
     int i;
     for(i=0;i<taille;i++){
@@ -86,6 +90,11 @@ bool not_in(coord c, coord* tableau, int taille){
     return true;
 }
 
+/*
+* \fn direction spread(snake* s,field* map);
+* \brief Chooses a direction considering how much space is left to move in.
+*        When the choice doesn't matter, rngesus2 will be used.
+*/
 direction spread(snake* s,field* map){
     coord tableft[(map->width)*(map->height)];
     coord tabright[(map->width)*(map->height)];
