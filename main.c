@@ -61,7 +61,7 @@ int main(){
         printf("2 - Play (IA level 1)\n");
         printf("3 - Play (IA level 2)\n");
         printf("4 - About this program\n");
-        printf("Pour changer la direction du snake, utiliser les touches Z pour haut, S pour bas, Q pour gauche et D pour droite\n");
+        printf("To move your snake, please use Z for up, S for down, Q for left and D for right.\n");
         printf("Please enter your choice.\n");
         if(scanf("%i", &choix) == 0){
             printf("Menu error\n");
