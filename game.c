@@ -34,7 +34,7 @@ void play(int size, direction (* move_IA) (snake *, field *) ) {
         free_field(map);
         clear();
         printf("Please increase your window size or decrease your snake size\n");
-        exit(1);
+        return;
     }
 
     //creating snakes
