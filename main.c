@@ -10,6 +10,7 @@
 #include <signal.h>         //for 'SIGINT' and 'signal()'
 
 #include "game.h"
+#include "AI.h"
 
 /**
 * \fn void about();
@@ -56,8 +57,10 @@ int main(){
         printf("|           MENU           |\n");
         printf("----------------------------\n");
         printf("0 - Quit game\n");
-        printf("1 - Play\n");
-        printf("2 - About this program\n");
+        printf("1 - Play (IA level 0)\n");
+        printf("2 - Play (IA level 1)\n");
+        printf("3 - Play (IA level 2)\n");
+        printf("4 - About this program\n");
         printf("Please enter your choice.\n");
         if(scanf("%i", &choix) == 0){
             printf("Menu error\n");
@@ -70,10 +73,23 @@ int main(){
             case 1:
                 printf("Enter snake size :\n");
                 scanf("%i", &taille);
-                play(taille);
+                play(taille,rngesus);
                 break;
             case 2:
+                printf("Enter snake size :\n");
+                scanf("%i", &taille);
+                play(taille,rngesus2);
+                break;
+            case 3:
+                printf("Enter snake size :\n");
+                scanf("%i", &taille);
+                play(taille,spread);
+                break;
+            case 4:
                 about();
+                break;
+            default :
+                ok = 0; printf("Choose again please.\n");
                 break;
         }
     }

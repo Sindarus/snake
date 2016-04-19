@@ -26,7 +26,7 @@
 * \details This function cares for the creation of the snakes and field,
 *          the passing of the time, the collision management and so on.
 */
-void play(int size) {
+void play(int size, direction (* move_IA) (snake *, field *) ) {
     clear();
     //creating field
     field* map = new_field();
@@ -92,7 +92,7 @@ void play(int size) {
         }
 
         // choose schlanga direction
-        cur_dir = spread(schlanga,map);
+        cur_dir = move_IA(schlanga,map);
 
         //move schlanga
         if(move(schlanga, cur_dir, map)){

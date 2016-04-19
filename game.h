@@ -29,7 +29,7 @@
 
 // PROTOTYPES ==========================================================
 // Game ================================================================
-void play(int size);
+void play(int size, direction (* move_IA) (snake *, field *));
 int move(snake* s, direction d, field* map);
 void pop_item(field* map);
 
