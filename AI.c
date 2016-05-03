@@ -138,6 +138,8 @@ direction spread(snake* s,field* map){
         else{
             return i;
         }
+        
+        return 0;
     }
 
     if (get_square_at(map,l) == EMPTY){a1=rec(map,l,tableft,0);}
@@ -164,6 +166,5 @@ direction spread(snake* s,field* map){
     else {
         return rngesus2(s,map);
     }
-
 }
 
