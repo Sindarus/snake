@@ -9,7 +9,7 @@ create_obj:
 
 
 snake: obj/game.o obj/main.o obj/types.o obj/game.o obj/AI.o
-	$(CC) $(CFLAGS) obj/types.o obj/game.o obj/AI.o obj/main.o -o snake
+	$(CC) $(CFLAGS) obj/types.o obj/game.o obj/AI.o obj/main.o -o snake -lm
 
 obj/main.o: main.c game.h
 	$(CC) $(CFLAGS) -c main.c -o $@
@@ -29,7 +29,7 @@ obj/types.o: types.c
 
 
 snake_test: obj/main_test.o obj/test_types.o obj/types.o obj/game_with_no_display.o obj/AI.o
-	$(CC) $(CFLAGS) obj/main_test.o obj/test_types.o obj/types.o obj/game_with_no_display.o obj/AI.o -o snake_test
+	$(CC) $(CFLAGS) obj/main_test.o obj/test_types.o obj/types.o obj/game_with_no_display.o obj/AI.o -o snake_test -lm
 
 obj/main_test.o: main_test.c test_types.h
 	$(CC) $(CFLAGS) -c main_test.c -o $@

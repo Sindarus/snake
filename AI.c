@@ -8,6 +8,7 @@
 
 #include <stdlib.h>     //for 'rand()'
 #include <stdbool.h>
+#include <math.h>
 #include "types.h"
 
 #include "AI.h"
@@ -90,6 +91,29 @@ bool not_in(coord c, coord* tableau, int taille){
     return true;
 }
 
+int rec(field* map, coord c, coord* tableau, int* i){
+    coord up=coord_after_dir(c,UP);
+    coord down=coord_after_dir(c,DOWN);
+    coord left=coord_after_dir(c,LEFT);
+    coord right=coord_after_dir(c,RIGHT);
+
+    if (get_square_at(map,c) != EMPTY || !not_in(c,tableau,i[0]) || i[0]>20){
+        return 0;
+    }
+    else{
+        tableau[i[0]]=c;
+        i[0]++;
+
+        int zz=rec(map,up,tableau,i);
+        int ze=rec(map,left,tableau,i);
+        int zr=rec(map,right,tableau,i);
+        int zt=rec(map,down,tableau,i);
+        return (1+zz+ze+zr+zt);
+    }
+    return 0;
+}
+
+
 /*
 * \fn direction spread(snake* s,field* map);
 * \brief Chooses a direction considering how much space is left to move in.
@@ -108,13 +132,15 @@ direction spread(snake* s,field* map){
     coord r=coord_after_dir(start,RIGHT);
 
     int a1,a2,a3,a4;
+    int i=0;
 
-    int rec(field* map, coord c, coord* tableau, int i){
-        coord up=coord_after_dir(c,UP);
-        coord down=coord_after_dir(c,DOWN);
-        coord left=coord_after_dir(c,LEFT);
-        coord right=coord_after_dir(c,RIGHT);
+    a1=rec(map,l,tableft,&i);i=0;
+    a2=rec(map,r,tabright,&i);i=0;
+    a3=rec(map,d,tabdown,&i);i=0;
+    a4=rec(map,u,tabup,&i);
 
+<<<<<<< HEAD
+=======
         if ( get_square_at(map,up) == EMPTY && not_in(up,tableau,i)){
             tableau[i]=up;
             i++;
@@ -150,17 +176,21 @@ direction spread(snake* s,field* map){
     else{a3=0;}
     if (get_square_at(map,u) == EMPTY){a4=rec(map,u,tabup,0);}
     else{a4=0;}
+>>>>>>> 9e4232590e30ec19a66dcf9ad28f97d8914feeff
 
-    if (a1>a2 && a1>a3 && a1>a4){
+    if ( (a1==a2 && a1==a3) || (a2==a3 && a2==a4) || (a3==a4 && a3==a1) || (a4==a2 && a4==a1)){
+        return rngesus2(s,map);
+    }
+    else if (a1>=a2 && a1>=a3 && a1>=a4){
         return LEFT;
     }
-    else if (a2>a1 && a2>a3 && a2>a4){
+    else if (a2>=a3 && a2>=a4 && a2>=a1){
         return RIGHT;
     }
-    else if (a3>a2 && a3>a1 && a3>a4){
+    else if (a3>=a1 && a3>=a2 && a3>=a4){
         return DOWN;
     }
-    else if (a4>a2 && a4>a1 && a4>a3){
+    else if (a4>=a1 && a4>=a2 && a4>=a3){
         return UP;
     }
     else {
@@ -168,3 +198,57 @@ direction spread(snake* s,field* map){
     }
 }
 
+float dist(coord depart, coord arrivee){
+    return (sqrtf((depart.x-arrivee.x)*(depart.x-arrivee.x) + (depart.y-arrivee.y)*(depart.y-arrivee.y)));
+}
+
+bool compare(float a, float b){
+    if (a==0){
+        return false;
+    }
+    else if (b==0){
+        return true;
+    }
+    else {
+        return (a<b);
+    }
+}
+
+direction best(float a, float b, float c, float d, snake* s, field* map){
+    if ((compare(c,a)) && (compare(c,b)) && (compare(c,d))){
+        return LEFT;
+    }
+    else if ((compare(b,a)) && (compare(b,c)) && (compare(b,d))){
+        return DOWN;
+    }
+    else if ((compare(a,b)) && (compare(a,c)) && (compare(a,d))){
+        return UP;
+    }
+    else if ((compare(d,a)) && (compare(d,b)) && (compare(d,c))){
+        return RIGHT;
+    }
+    else{
+        return rngesus2(s,map);
+    }
+}
+
+direction aggro_dist(snake* s, field* map, snake* enemy){
+    coord end=(enemy->body[enemy->head]);
+    float a=0,b=0,c=0,d=0;
+    coord start=(s->body[s->head]);
+
+    if (detect(s,UP,map)){
+        a=dist(coord_after_dir(start,UP),end);
+    }
+    else if (detect(s,DOWN,map)){
+        b=dist(coord_after_dir(start,DOWN),end);
+    }
+    else if (detect(s,LEFT,map)){
+        c=dist(coord_after_dir(start,LEFT),end);
+    }
+    else if (detect(s,RIGHT,map)){
+        d=dist(coord_after_dir(start,RIGHT),end);
+    }
+
+    return best(a,b,c,d,s,map);
+}
