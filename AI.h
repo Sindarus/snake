@@ -14,6 +14,10 @@
 // Helpers =============================================================
 int detect(snake* s, direction c, field* map);
 bool not_in(coord c, coord* tableau, int taille);
+int rec(field* map, coord c, coord* tableau, int* i);
+float dist(coord depart, coord arrivee);
+bool compare(float a, float b);
+direction best(float a, float b, float c, float d, snake* s, field* map);
 
 // AI main functions ===================================================
 direction rngesus(snake* s, field* map);

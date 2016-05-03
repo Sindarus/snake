@@ -35,6 +35,42 @@ int detect(snake* s, direction c, field* map){
     else{return 1;}
 }
 
+/*
+* \fn bool not_in(coord c, coord* tableau, int taille);
+* \brief Return true if the 'c' coord is in the array 'tableau' (of length 'taille'). Else return false.
+*/
+bool not_in(coord c, coord* tableau, int taille){
+    int i;
+    for(i=0;i<taille;i++){
+        if (are_equal(c,tableau[i])){
+            return false;
+        }
+    }
+    return true;
+}
+
+int rec(field* map, coord c, coord* tableau, int* i){
+    coord up=coord_after_dir(c,UP);
+    coord down=coord_after_dir(c,DOWN);
+    coord left=coord_after_dir(c,LEFT);
+    coord right=coord_after_dir(c,RIGHT);
+
+    if (get_square_at(map,c) != EMPTY || !not_in(c,tableau,i[0]) || i[0]>20){
+        return 0;
+    }
+    else{
+        tableau[i[0]]=c;
+        i[0]++;
+
+        int zz=rec(map,up,tableau,i);
+        int ze=rec(map,left,tableau,i);
+        int zr=rec(map,right,tableau,i);
+        int zt=rec(map,down,tableau,i);
+        return (1+zz+ze+zr+zt);
+    }
+    return 0;
+}
+
 // AI main functions ===================================================
 /**
 * \fn dir rngesus(snake* s);
@@ -77,41 +113,7 @@ direction rngesus2(snake* s, field* map){
     return dir;
 }
 
-/*
-* \fn bool not_in(coord c, coord* tableau, int taille);
-* \brief Return true if the 'c' coord is in the array 'tableau' (of length 'taille'). Else return false.
-*/
-bool not_in(coord c, coord* tableau, int taille){
-    int i;
-    for(i=0;i<taille;i++){
-        if (are_equal(c,tableau[i])){
-            return false;
-        }
-    }
-    return true;
-}
 
-int rec(field* map, coord c, coord* tableau, int* i){
-    coord up=coord_after_dir(c,UP);
-    coord down=coord_after_dir(c,DOWN);
-    coord left=coord_after_dir(c,LEFT);
-    coord right=coord_after_dir(c,RIGHT);
-
-    if (get_square_at(map,c) != EMPTY || !not_in(c,tableau,i[0]) || i[0]>20){
-        return 0;
-    }
-    else{
-        tableau[i[0]]=c;
-        i[0]++;
-
-        int zz=rec(map,up,tableau,i);
-        int ze=rec(map,left,tableau,i);
-        int zr=rec(map,right,tableau,i);
-        int zt=rec(map,down,tableau,i);
-        return (1+zz+ze+zr+zt);
-    }
-    return 0;
-}
 
 
 /*
