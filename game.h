@@ -27,6 +27,12 @@
 #define FREEZING_TIME 10 /**< number of iterations during which a snake will be freezed */
 #define ADD_SPEED 25000 /**< add x seconds to uspleep */
 
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+#define BLUE    "\033[34m"      /* Blue */
+#define RESET "\033[0m"
+
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 
 // PROTOTYPES ==========================================================
@@ -42,6 +48,7 @@ direction key_to_dir(char c);
 
 // Display =============================================================
 void print_to_pos(coord pos, char c);
+void print_to_pos_colored(coord pos, char c, char* color);
 void mode_raw(int activate);
 void print_msg(int msg);
 //void display(field* map, snake* s1, snake* s2);

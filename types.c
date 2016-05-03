@@ -74,7 +74,7 @@ field* new_field() {
             c.y = b;
             if (a == 1 || a == map->height-1 || b == 1 || b == map->width-1) {
                 map->f[a][b] = WALL;
-                print_to_pos(c, '#');
+                print_to_pos_colored(c, '#', RED);
             } else {
                 map->f[a][b] = EMPTY;
                 print_to_pos(c, ' ');
@@ -106,10 +106,10 @@ snake* new_snake(t_type type, int size, coord start_pos, field* map) {
     for (i = size-1; i>=0; i--) {
         s->body[i] = start_pos;  //at first, the snake fits in one square
         if(s->type == T_SNAKE){
-            print_to_pos(start_pos, 's');
+            print_to_pos_colored(start_pos, 's', BLUE);
         }
         if(s->type == T_SCHLANGA){
-            print_to_pos(start_pos, '$');
+            print_to_pos_colored(start_pos, '$', GREEN);
         }
 
         set_square_at(map, start_pos, SNAKE);

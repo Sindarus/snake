@@ -161,10 +161,10 @@ int move(snake* s, direction d, field* map) {
     //DISPLAY
     print_to_pos(c_tail, ' ');
     if(s->type == T_SNAKE){
-        print_to_pos(s->body[s->head], 's');
+        print_to_pos_colored(s->body[s->head], 's', BLUE);
     }
     if(s->type == T_SCHLANGA){
-        print_to_pos(s->body[s->head], '$');
+        print_to_pos_colored(s->body[s->head], '$', GREEN);
     }
 
     //COLLISIONS
@@ -195,7 +195,7 @@ int move(snake* s, direction d, field* map) {
 				coord pos_wall = new_coord(1 + rand() % (map->height-1), 1 + rand() % (map->width-1));
 				if (get_square_at(map, pos_wall) == EMPTY) {
 					set_square_at(map, pos_wall, WALL);
-					print_to_pos(pos_wall, '#');
+					print_to_pos_colored(pos_wall, '#', RED);
 				}
 			}
 			collision = 0;
@@ -328,6 +328,12 @@ direction key_to_dir(char c){
 void print_to_pos(coord pos, char c) {
     #ifndef DO_NOT_DISPLAY
     printf("\033[%d;%dH%c", pos.x, pos.y, c);
+    #endif
+}
+
+void print_to_pos_colored(coord pos, char c, char* color) {
+    #ifndef DO_NOT_DISPLAY
+    printf("%s \033[%d;%dH%c" RESET, color, pos.x, pos.y, c);
     #endif
 }
 
