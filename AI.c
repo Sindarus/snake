@@ -71,6 +71,40 @@ int rec(field* map, coord c, coord* tableau, int* i){
     return 0;
 }
 
+float dist(coord depart, coord arrivee){
+    return (sqrtf((depart.x-arrivee.x)*(depart.x-arrivee.x) + (depart.y-arrivee.y)*(depart.y-arrivee.y)));
+}
+
+bool compare(float a, float b){
+    if (a==0){
+        return false;
+    }
+    else if (b==0){
+        return true;
+    }
+    else {
+        return (a<b);
+    }
+}
+
+direction best(float a, float b, float c, float d, snake* s, field* map){
+    if ((compare(c,a)) && (compare(c,b)) && (compare(c,d))){
+        return LEFT;
+    }
+    else if ((compare(b,a)) && (compare(b,c)) && (compare(b,d))){
+        return DOWN;
+    }
+    else if ((compare(a,b)) && (compare(a,c)) && (compare(a,d))){
+        return UP;
+    }
+    else if ((compare(d,a)) && (compare(d,b)) && (compare(d,c))){
+        return RIGHT;
+    }
+    else{
+        return rngesus2(s,map);
+    }
+}
+
 // AI main functions ===================================================
 /**
 * \fn dir rngesus(snake* s);
@@ -113,9 +147,6 @@ direction rngesus2(snake* s, field* map){
     return dir;
 }
 
-
-
-
 /*
 * \fn direction spread(snake* s,field* map);
 * \brief Chooses a direction considering how much space is left to move in.
@@ -157,40 +188,6 @@ direction spread(snake* s,field* map){
         return UP;
     }
     else {
-        return rngesus2(s,map);
-    }
-}
-
-float dist(coord depart, coord arrivee){
-    return (sqrtf((depart.x-arrivee.x)*(depart.x-arrivee.x) + (depart.y-arrivee.y)*(depart.y-arrivee.y)));
-}
-
-bool compare(float a, float b){
-    if (a==0){
-        return false;
-    }
-    else if (b==0){
-        return true;
-    }
-    else {
-        return (a<b);
-    }
-}
-
-direction best(float a, float b, float c, float d, snake* s, field* map){
-    if ((compare(c,a)) && (compare(c,b)) && (compare(c,d))){
-        return LEFT;
-    }
-    else if ((compare(b,a)) && (compare(b,c)) && (compare(b,d))){
-        return DOWN;
-    }
-    else if ((compare(a,b)) && (compare(a,c)) && (compare(a,d))){
-        return UP;
-    }
-    else if ((compare(d,a)) && (compare(d,b)) && (compare(d,c))){
-        return RIGHT;
-    }
-    else{
         return rngesus2(s,map);
     }
 }
