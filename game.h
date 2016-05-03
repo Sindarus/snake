@@ -23,7 +23,9 @@
 #define MSG_WIN 2
 #define MSG_DRAW 3
 
-#define NB_ITEMS 2
+#define NB_ITEMS 5 /**< number of items in game */
+#define FREEZING_TIME 10 /**< number of iterations during which a snake will be freezed */
+#define ADD_SPEED 25000 /**< add x seconds to uspleep */
 
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 

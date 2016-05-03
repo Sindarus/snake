@@ -45,13 +45,16 @@ void play(int size, direction (* move_IA) (snake *, field *) ) {
 
     char c;         // key that is pressed
     int ret;
+    
+    int random_item; // Random integer deciding if an item pops or not
+    
     direction cur_dir;
 
     mode_raw(1);
 
     // Main loop
     while(1){
-        usleep(TIME_STEP * 1000);
+        usleep(TIME_STEP * 1000 - map->speed);
 
         // Input/Output management, choosing snake's direction
         if( (ret = read(0, &c, sizeof(char))) == -1){
@@ -83,28 +86,42 @@ void play(int size, direction (* move_IA) (snake *, field *) ) {
         }
 
         //move snake
-        if(move(s, cur_dir, map)){
-            free_all(map, s, schlanga);
-            mode_raw(0);
-            clear();
-            print_msg(MSG_LOOSE);
-            return;
-        }
+        if (map->freeze_snake > 0) {
+			map->freeze_snake--;
+		} else {
+			if(move(s, cur_dir, map)){
+				free_all(map, s, schlanga);
+				mode_raw(0);
+				clear();
+				print_msg(MSG_LOOSE);
+				return;
+			}
+		}
 
         // choose schlanga direction
+        //~ cur_dir = spread(schlanga,map);
+        //~ cur_dir = rngesus2(schlanga,map);
         cur_dir = move_IA(schlanga,map);
 
         //move schlanga
-        if(move(schlanga, cur_dir, map)){
-            free_all(map, s, schlanga);
-            mode_raw(0);
-            clear();
-            print_msg(MSG_WIN);
-            return;
-        }
-
+        if (map->freeze_schlanga > 0) {
+			map->freeze_schlanga--;
+		} else {
+			if(move(schlanga, cur_dir, map)){
+				free_all(map, s, schlanga);
+				mode_raw(0);
+				clear();
+				print_msg(MSG_WIN);
+				return;
+			}
+		}
+		
+		random_item = rand() % 10;
+		if (random_item == 0) {
+			pop_item(map);
+		}
         fflush(stdout);
-    }//end while(1)
+    }// end while(1)
 }
 
 /**
@@ -152,33 +169,67 @@ int move(snake* s, direction d, field* map) {
 
     //COLLISIONS
     square temp_square = get_square_at(map, get_head_coord(s));
-    if (temp_square != EMPTY) {
-        return 1;
-        // switch(temp_square){
-        //     case WALL:
-        //         //write(2, "hit a wall\n", 11*sizeof(char));
-        //         return 1;
-        //         break;
-        //     case SCHLANGA:
-        //         //write(2, "hit schlanga\n", 13*sizeof(char));
-        //         return 1;
-        //         break;
-        //     case SNAKE:
-        //         //write(2, "hit snake\n", 10*sizeof(char));
-        //         return 1;
-        //         break;
-        //     default:
-        //         //write(2, "hit ???\n", 7*sizeof(char));
-        //         return 1;
-        //         break;
-        // }
+    //~ if (temp_square != EMPTY) {
+        //~ return 1;
+	int collision;
+	int popwall;
+	//~ coord pos_wall;
+    switch(temp_square) {
+		case WALL:
+			//~ write(2, "hit a wall\n", 11*sizeof(char));
+			collision = 1;
+			break;
+		case SCHLANGA:
+			//~ write(2, "hit schlanga\n", 13*sizeof(char));
+			collision = 1;
+			break;
+		case SNAKE:
+			//~ write(2, "hit snake\n", 10*sizeof(char));
+			collision = 1;
+			break;
+		case FOOD:
+			collision = 0;
+			break;
+		case POPWALL:
+			for (popwall = 0; popwall < 5; popwall++) {
+				coord pos_wall = new_coord(1 + rand() % (map->height-1), 1 + rand() % (map->width-1));
+				if (get_square_at(map, pos_wall) == EMPTY) {
+					set_square_at(map, pos_wall, WALL);
+					print_to_pos(pos_wall, '#');
+				}
+			}
+			collision = 0;
+			break;
+		case HIGHSPEED:
+			collision = 0;
+			map->speed += ADD_SPEED;
+			break;
+		case LOWSPEED:
+			collision = 0;
+			map->speed -= ADD_SPEED;
+			break;
+		case FREEZE:
+			collision = 0;
+			if(s->type == T_SNAKE){
+				map->freeze_schlanga = FREEZING_TIME;
+			} else if(s->type == T_SCHLANGA){
+				map->freeze_snake = FREEZING_TIME;
+			}
+			break;
+		case EMPTY:
+			//~ write(2, "hit ???\n", 7*sizeof(char));
+			collision = 0;
+			break;
     }
 
-    //UPDATE FIELD
-    set_square_at(map, get_head_coord(s), s->type);
-    set_square_at(map, c_tail, EMPTY);
-
-    return 0;
+	if (collision == 0) {
+		// UPDATE FIELD
+		set_square_at(map, get_head_coord(s), s->type);
+		set_square_at(map, c_tail, EMPTY);
+		return 0;
+	} else {
+		return 1;
+	}
 }
 
 // Items ===============================================================
@@ -189,18 +240,37 @@ int move(snake* s, direction d, field* map) {
 void pop_item(field* map) {
     coord pos_item;
     square item;
-    int dir = rand() % NB_ITEMS;
+    char item_char;
+    int dir = rand() % 4;
 
     do {
-        pos_item = new_coord(rand() % map->height, rand() % map->width);
-    } while (get_square_at(map, pos_item) == EMPTY);
+        pos_item = new_coord(1 + rand() % (map->height-1), 1 + rand() % (map->width-1));
+    } while (get_square_at(map, pos_item) != EMPTY);
 
     switch (dir) {
         case 0:
-            item = POPWALL;
+            item = FREEZE;
+            item_char = '*';
             break;
         case 1:
-            item = HIGHSPEED;
+			if (map->speed >= 5*ADD_SPEED) {
+				item = -1;
+			} else {
+				item = HIGHSPEED;
+				item_char = 'Z';
+			}
+            break;
+        case 2:
+			if (map->speed <= -5*ADD_SPEED) {
+				item = -1;
+			} else {
+				item = LOWSPEED;
+				item_char = 'Q';
+			}
+            break;
+        case 3:
+			item = POPWALL;
+			item_char = 'W';
             break;
         default:
             item = -1;
@@ -209,6 +279,7 @@ void pop_item(field* map) {
 
     if (item > 0) {
         set_square_at(map, pos_item, item);
+        print_to_pos(pos_item, item_char);
     }
 }
 

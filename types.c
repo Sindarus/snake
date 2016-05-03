@@ -81,6 +81,9 @@ field* new_field() {
             }
         }
     }
+            
+    map->freeze_snake = map->freeze_schlanga = 0;
+    map->speed = 0;
 
     return map;
 }

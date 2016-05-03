@@ -28,7 +28,7 @@ typedef enum {UP, DOWN, LEFT, RIGHT} direction;
 * \typedef square
 * \brief Gathers the possible content of a square of the field.
 */
-typedef enum {EMPTY, WALL, SNAKE, SCHLANGA, POPWALL, HIGHSPEED} square;
+typedef enum {EMPTY, WALL, SNAKE, SCHLANGA, FOOD, POPWALL, HIGHSPEED, LOWSPEED, FREEZE} square;
 
 /**
 * \typedef t_type
@@ -57,9 +57,12 @@ typedef struct snake {
 * \brief Represents the arena on which the game is played
 */
 typedef struct field {
-    square** f;     /**< 2D array representing the field*/
-    int width;      /**< width of the field */
-    int height;     /**< height of the field */
+    square** f;     		/**< 2D array representing the field*/
+    int width;     			/**< width of the field */
+    int height;     		/**< height of the field */
+    int speed;				/**< basic speed of game */
+    int freeze_snake;		/**< freezing-time left for snake */
+    int freeze_schlanga;	/**< freezing-time left for schlanga */
 } field;
 
 // PROTOTYPES ==========================================================
