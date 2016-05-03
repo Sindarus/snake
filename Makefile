@@ -28,14 +28,18 @@ obj/types.o: types.c
 
 
 
-snake_test: obj/main_test.o obj/test_types.o obj/types.o obj/game_with_no_display.o obj/AI.o
-	$(CC) $(CFLAGS) obj/main_test.o obj/test_types.o obj/types.o obj/game_with_no_display.o obj/AI.o -o snake_test -lm
+snake_test: obj/main_test.o obj/test_types.o obj/types.o obj/game_with_no_display.o obj/AI.o obj/test_AI.o
+	$(CC) $(CFLAGS) obj/main_test.o obj/test_types.o obj/test_AI.o obj/types.o obj/game_with_no_display.o obj/AI.o -o snake_test -lm
 
 obj/main_test.o: main_test.c test_types.h
 	$(CC) $(CFLAGS) -c main_test.c -o $@
 
 obj/test_types.o: test_types.c test_types.h types.h
 	$(CC) $(CFLAGS) -c test_types.c -o $@
+
+obj/test_AI.o: test_AI.c test_AI.h types.h
+	$(CC) $(CFLAGS) -c test_AI.c -o $@
+
 
 
 clean :

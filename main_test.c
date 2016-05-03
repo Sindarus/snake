@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "test_types.h"
+#include "test_AI.h"
 
 /**
 * \brief Runs 'fn' and prints an appropriate message on screen
@@ -43,6 +44,9 @@ int main(){
     //test_function(&, "");
     //test_function(&, "");
     //test_function(&, "");
+
+    printf("========== TEST AI ==========================================\n");
+    test_function(&test_dist, "test_dist");
 
     return 0;
 }
