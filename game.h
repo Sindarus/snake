@@ -27,9 +27,9 @@
 #define FREEZING_TIME 10 /**< number of iterations during which a snake will be freezed */
 #define ADD_SPEED 25000 /**< add x seconds to uspleep */
 
-#define RED     "\033[31m"      /* Red */
+#define RED     "\033[1m\033[31m"      /* Red */
 #define GREEN   "\033[32m"      /* Green */
-#define YELLOW  "\033[33m"      /* Yellow */
+#define YELLOW  "\033[1m\033[33m"      /* Yellow */
 #define BLUE    "\033[34m"      /* Blue */
 #define RESET "\033[0m"
 

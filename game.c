@@ -161,10 +161,10 @@ int move(snake* s, direction d, field* map) {
     //DISPLAY
     print_to_pos(c_tail, ' ');
     if(s->type == T_SNAKE){
-        print_to_pos_colored(s->body[s->head], 's', BLUE);
+        print_to_pos(s->body[s->head], 's');
     }
     if(s->type == T_SCHLANGA){
-        print_to_pos_colored(s->body[s->head], '$', GREEN);
+        print_to_pos(s->body[s->head], '$');
     }
 
     //COLLISIONS
@@ -331,6 +331,12 @@ void print_to_pos(coord pos, char c) {
     #endif
 }
 
+/**
+* \fn void print_to_pos(coord pos, char c, char* color);
+* \brief prints the character 'c' at the given position in chosen color
+* \details this functions sets the cursor to [x,y] pos and
+*          prints the 'c' param with chosen color
+*/
 void print_to_pos_colored(coord pos, char c, char* color) {
     #ifndef DO_NOT_DISPLAY
     printf("%s \033[%d;%dH%c" RESET, color, pos.x, pos.y, c);
