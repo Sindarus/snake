@@ -193,20 +193,20 @@ direction spread(snake* s,field* map){
 }
 
 direction aggro_dist(snake* s, field* map, snake* enemy){
-    coord end=(enemy->body[enemy->head]);
+    coord end = get_head_coord(enemy);
     float a=0,b=0,c=0,d=0;
-    coord start=(s->body[s->head]);
+    coord start = get_head_coord(s);
 
     if (detect(s,UP,map)){
         a=dist(coord_after_dir(start,UP),end);
     }
-    else if (detect(s,DOWN,map)){
+    if (detect(s,DOWN,map)){
         b=dist(coord_after_dir(start,DOWN),end);
     }
-    else if (detect(s,LEFT,map)){
+    if (detect(s,LEFT,map)){
         c=dist(coord_after_dir(start,LEFT),end);
     }
-    else if (detect(s,RIGHT,map)){
+    if (detect(s,RIGHT,map)){
         d=dist(coord_after_dir(start,RIGHT),end);
     }
 

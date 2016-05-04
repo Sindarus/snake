@@ -23,6 +23,7 @@ direction best(float a, float b, float c, float d, snake* s, field* map);
 direction rngesus(snake* s, field* map);
 direction rngesus2(snake* s, field* map);
 direction spread(snake* s,field* map);
+direction aggro_dist(snake* s, field* map, snake* enemy);
 
 
 #endif
