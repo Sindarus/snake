@@ -23,10 +23,11 @@
 * \fn void play(int size);
 * \brief Function that launches a game and makes it run.
 * \param size size of the snakes
+* \param IA_version version of the IA to run.
 * \details This function cares for the creation of the snakes and field,
 *          the passing of the time, the collision management and so on.
 */
-void play(int size, direction (* move_IA) (snake *, field *) ) {
+void play(int size, int IA_version) {
     clear();
     //creating field
     field* map = new_field();
@@ -45,9 +46,9 @@ void play(int size, direction (* move_IA) (snake *, field *) ) {
 
     char c;         // key that is pressed
     int ret;
-    
+
     int random_item; // Random integer deciding if an item pops or not
-    
+
     direction cur_dir;
 
     mode_raw(1);
@@ -99,9 +100,24 @@ void play(int size, direction (* move_IA) (snake *, field *) ) {
 		}
 
         // choose schlanga direction
-        //~ cur_dir = spread(schlanga,map);
-        //~ cur_dir = rngesus2(schlanga,map);
-        cur_dir = move_IA(schlanga,map);
+        switch(IA_version){
+            case 1:
+                cur_dir = rngesus(schlanga, map);
+                break;
+            case 2:
+                cur_dir = rngesus2(schlanga, map);
+                break;
+            case 3:
+                cur_dir = spread(schlanga, map);
+                break;
+            case 4:
+                cur_dir = aggro_dist(schlanga, map, s);
+                break;
+            default:
+                free_all(map, s, schlanga); mode_raw(0); clear();
+                printf("In 'move()' : IA_version not recognized.\n");
+                exit(1);
+        }
 
         //move schlanga
         if (map->freeze_schlanga > 0) {
@@ -115,7 +131,7 @@ void play(int size, direction (* move_IA) (snake *, field *) ) {
 				return;
 			}
 		}
-		
+
 		random_item = rand() % 10;
 		if (random_item == 0) {
 			pop_item(map);

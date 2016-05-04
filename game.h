@@ -37,7 +37,7 @@
 
 // PROTOTYPES ==========================================================
 // Game ================================================================
-void play(int size, direction (* move_IA) (snake *, field *));
+void play(int size, int IA_version);
 int move(snake* s, direction d, field* map);
 void pop_item(field* map);
 

@@ -25,6 +25,14 @@ void about(){
 }
 
 /**
+* \fn void instructions();
+* \brief Displays info about how to play the game
+*/
+void instructions(){
+    printf("To move your snake, use ZQSD. (Z for up, S for down, Q for left and D for right.)\n");
+}
+
+/**
 * \fn void quit();
 * \brief safely quits
 */
@@ -50,18 +58,16 @@ int main(){
     //char input;
     int taille;
     int choix;
-    bool ok = 0;
+    bool ok = false;
 
-    while(ok != 1){
+    while(!ok){
         printf("----------------------------\n");
         printf("|           MENU           |\n");
         printf("----------------------------\n");
         printf("0 - Quit game\n");
-        printf("1 - Play (IA level 0)\n");
-        printf("2 - Play (IA level 1)\n");
-        printf("3 - Play (IA level 2)\n");
-        printf("4 - About this program\n");
-        printf("To move your snake, please use Z for up, S for down, Q for left and D for right.\n");
+        printf("1 - Play\n");
+        printf("2 - How to play ?\n");
+        printf("3 - About this program\n");
         printf("Please enter your choice.\n");
         if(scanf("%i", &choix) == 0){
             printf("Menu error\n");
@@ -69,28 +75,41 @@ int main(){
         }
         switch(choix){
             case 0:
-                ok = 1; printf("Good bye !\n");
+                ok = true;
+                printf("Good bye !\n");
                 break;
             case 1:
                 printf("Enter snake size :\n");
-                scanf("%i", &taille);
-                play(taille,rngesus);
+                if(scanf("%i", &taille) == 0){
+                    printf("Menu error\n");
+                    exit(1);
+                }
+                if(taille < 1){
+                    taille = 1;
+                }
+
+                printf("Select the level of the AI : 1, 2, 3 or 4 ?\n");
+                if(scanf("%i", &choix) == 0){
+                    printf("Menu error\n");
+                    exit(1);
+                }
+                if(choix >= 1 && choix <= 4){
+                    play(taille, choix);
+                }
+                else{
+                    printf("Level of AI not implemented. Selecting 4 instead. Press enter to continue.");
+                    scanf("%i", &choix); //"press any key to continue"
+                    play(taille, 4);
+                }
                 break;
             case 2:
-                printf("Enter snake size :\n");
-                scanf("%i", &taille);
-                play(taille,rngesus2);
+                instructions();
                 break;
             case 3:
-                printf("Enter snake size :\n");
-                scanf("%i", &taille);
-                play(taille,spread);
-                break;
-            case 4:
                 about();
                 break;
             default :
-                ok = 0; printf("Choose again please.\n");
+                printf("Choose again please.\n");
                 break;
         }
     }
