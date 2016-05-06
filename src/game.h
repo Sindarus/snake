@@ -27,6 +27,7 @@
 #define FREEZING_TIME 10 /**< number of iterations during which a snake will be freezed */
 #define ADD_SPEED 25000 /**< add x seconds to usleep */
 #define MAX_PLAYERS 10
+#define MAX_INPUT_STACK 10 /**< maximum number of valid move-input that can stack */
 
 #define RED     "\033[1m\033[31m"      /* Red */
 #define GREEN   "\033[32m"      /* Green */
