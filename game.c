@@ -59,7 +59,6 @@ void play(config cfg) {
 
     char c;    // key that is pressed
     int ret;   // value returned by 'read()', 0 if no new key was pressed
-    direction stack[MAX_INPUT_STACK];    //stack of input
     direction cur_dir;
 
     int random_item; // Random integer deciding if an item pops or not
@@ -70,17 +69,18 @@ void play(config cfg) {
         usleep(TIME_STEP * 1000 - map->speed);
 
         // Input/Output management, choosing snake's direction
-        while( (ret = read(0, &c, sizeof(char))) != 0){  //while there is input to treat
-            if(ret == -1){
-                perror("read in 'play()'");
-                exit(1);
-            }
+        if( (ret = read(0, &c, sizeof(char))) == -1){
+            perror("read in 'play()'");
+            exit(1);
+        }
+        if(ret != 0){          // Check if user hits keyboard
             if(c == C_QUIT){                    //if user pushed quit button
                 mode_raw(0);
                 clear();
                 free_all(map, s, schlanga);
                 return;
             }
+
             if(key_is_dir(c)) {                 //if user pushed a direction
                 cur_dir = key_to_dir(c);        //retrieves the direction
 
@@ -92,11 +92,9 @@ void play(config cfg) {
             else{
                 cur_dir = s->dir;
             }
-
-            //if stack empty
-            // else {                  //if user hasn't hit the keyboard
-            //     cur_dir = s->dir;
-            // }
+        }
+        else {                  //if user hasn't hit the keyboard
+            cur_dir = s->dir;
         }
 
         //move snake
