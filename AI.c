@@ -117,9 +117,7 @@ direction best(float a, float b, float c, float d, snake* s, field* map){
 *          lies an int. 'UP' is in fact 0, 'DOWN' is in fact 1 ... etc
 * \returns direction choosen
 */
-direction rngesus(snake* s,field* map){
-    int n=map->height;
-    n++;
+direction rngesus(snake* s){
     direction d;
 
     do{

@@ -102,7 +102,7 @@ void play(int size, int IA_version) {
         // choose schlanga direction
         switch(IA_version){
             case 1:
-                cur_dir = rngesus(schlanga, map);
+                cur_dir = rngesus(schlanga);
                 break;
             case 2:
                 cur_dir = rngesus2(schlanga, map);
