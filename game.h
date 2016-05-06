@@ -25,7 +25,8 @@
 
 #define NB_ITEMS 5 /**< number of items in game */
 #define FREEZING_TIME 10 /**< number of iterations during which a snake will be freezed */
-#define ADD_SPEED 25000 /**< add x seconds to uspleep */
+#define ADD_SPEED 25000 /**< add x seconds to usleep */
+#define MAX_PLAYERS 10
 
 #define RED     "\033[1m\033[31m"      /* Red */
 #define GREEN   "\033[32m"      /* Green */
@@ -35,9 +36,18 @@
 
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 
+// STRUCTURES ==========================================================
+typedef struct config{
+    int size;           //snake size
+    int AI_version;
+    int players[MAX_PLAYERS];   //players[i] = 1 if it is a hooman, 2 if schlanga, 0 if not player
+} config;
+
 // PROTOTYPES ==========================================================
+config new_config();
+
 // Game ================================================================
-void play(int size, int IA_version);
+void play(config cfg);
 int move(snake* s, direction d, field* map);
 void pop_item(field* map);
 

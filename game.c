@@ -18,20 +18,33 @@
 
 #include "game.h"
 
+/**
+* \fn config new_config();
+* \brief Returns a newly created 'config' variable, with 'players[i]' = 0.
+*/
+config new_config(){
+    config cfg;
+
+    for(int i; i<MAX_PLAYERS; i++){
+        cfg.players[i] = 0;
+    }
+
+    return cfg;
+}
+
 // Game ================================================================
 /**
-* \fn void play(int size);
+* \fn void play(config cfg);
 * \brief Function that launches a game and makes it run.
-* \param size size of the snakes
-* \param IA_version version of the IA to run.
+* \param cfg a variable of type 'config' containing options for the game.
 * \details This function cares for the creation of the snakes and field,
 *          the passing of the time, the collision management and so on.
 */
-void play(int size, int IA_version) {
+void play(config cfg) {
     clear();
     //creating field
     field* map = new_field();
-    if (size > map->height/2) {
+    if (cfg.size > map->height/2) {
         free_field(map);
         clear();
         printf("Please increase your window size or decrease your snake size\n");
@@ -41,16 +54,14 @@ void play(int size, int IA_version) {
     //creating snakes
     coord start_pos = new_coord(map->height/2, map->width/5); // Starting position of snake depending on size of the window
     coord start_pos2 = new_coord(map->height/2, 4*map->width/5); // Starting position of snake depending on size of the window
-    snake* s = new_snake(T_SNAKE, size, start_pos, map); // Create snake with size 10 at start_pos on map
-    snake* schlanga = new_snake(T_SCHLANGA, size, start_pos2, map); // Create snake with size 10 at start_pos on map
+    snake* s = new_snake(T_SNAKE, cfg.size, start_pos, map); // Create snake with size 10 at start_pos on map
+    snake* schlanga = new_snake(T_SCHLANGA, cfg.size, start_pos2, map); // Create snake with size 10 at start_pos on map
 
-    char c;         // key that is pressed
-    int ret;
-
-    int random_item; // Random integer deciding if an item pops or not
-
+    char c;    // key that is pressed
+    int ret;   // value returned by 'read()', 0 if no new key was pressed
     direction cur_dir;
 
+    int random_item; // Random integer deciding if an item pops or not
     mode_raw(1);
 
     // Main loop
@@ -100,7 +111,7 @@ void play(int size, int IA_version) {
 		}
 
         // choose schlanga direction
-        switch(IA_version){
+        switch(cfg.AI_version){
             case 1:
                 cur_dir = rngesus(schlanga);
                 break;
@@ -115,7 +126,7 @@ void play(int size, int IA_version) {
                 break;
             default:
                 free_all(map, s, schlanga); mode_raw(0); clear();
-                printf("In 'move()' : IA_version not recognized.\n");
+                printf("In 'move()' : AI_version not recognized.\n");
                 exit(1);
         }
 

@@ -55,10 +55,11 @@ int main(){
     printf("||          MAC² SNAKE          ||\n");
     printf("==================================\n");
 
-    //char input;
-    int taille;
-    int choix;
+    int choice;
     bool ok = false;
+    config cfg = new_config();
+    cfg.players[0] = 1; //player 0 is a human
+    cfg.players[1] = 2; //player 1 is an AI
 
     while(!ok){
         printf("----------------------------\n");
@@ -69,37 +70,38 @@ int main(){
         printf("2 - How to play ?\n");
         printf("3 - About this program\n");
         printf("Please enter your choice.\n");
-        if(scanf("%i", &choix) == 0){
+        if(scanf("%i", &choice) == 0){
             printf("Menu error\n");
             exit(1);
         }
-        switch(choix){
+        switch(choice){
             case 0:
                 ok = true;
                 printf("Good bye !\n");
                 break;
             case 1:
                 printf("Enter snake size :\n");
-                if(scanf("%i", &taille) == 0){
+                if(scanf("%i", &(cfg.size)) == 0){
                     printf("Menu error\n");
                     exit(1);
                 }
-                if(taille < 1){
-                    taille = 1;
+                if(cfg.size < 1){
+                    cfg.size = 1;
                 }
 
-                printf("Select the level of the AI : 1, 2, 3 or 4 ?\n");
-                if(scanf("%i", &choix) == 0){
+                printf("Select the version of the AI : 1, 2, 3 or 4 ?\n");
+                if(scanf("%i", &(cfg.AI_version)) == 0){
                     printf("Menu error\n");
                     exit(1);
                 }
-                if(choix >= 1 && choix <= 4){
-                    play(taille, choix);
+                if(cfg.AI_version >= 1 && cfg.AI_version <= 4){
+                    play(cfg);
                 }
                 else{
-                    printf("Level of AI not implemented. Selecting 4 instead. Press enter to continue.");
-                    scanf("%i", &choix); //"press any key to continue"
-                    play(taille, 4);
+                    printf("version of AI not implemented. Selecting 4 instead. Press enter to continue.");
+                    cfg.AI_version = 4;
+                    scanf("%i", &choice); //"press any key to continue"
+                    play(cfg);
                 }
                 break;
             case 2:
