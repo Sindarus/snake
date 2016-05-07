@@ -8,6 +8,7 @@
 #include "types.h"
 
 // CONSTANTS ============================================================
+// OPTIONS
 #define C_P1_UP 'z'        /**< key to move player 1 up.       */
 #define C_P1_DOWN 's'      /**< key to move player 1 down.     */
 #define C_P1_LEFT 'q'      /**< key to move player 1 left.     */
@@ -26,11 +27,11 @@
 #define TIME_STEP 150   /**< time between two time steps. In msec. */
 
 #define NB_ITEMS 5        /**< number of items in game */
-#define FREEZING_TIME 10  /**< number of iterations during which a snake will be freezed */
+#define FREEZING_TIME 10  /**< number of iterations during which a snake will be frozen */
 #define ADD_SPEED 25000   /**< add x seconds to usleep */
-#define MAX_PLAYERS 10
 #define MAX_INPUT_STACK 5 /**< maximum inputs that can stack for a player */
 
+// UTILITY
 #define RED     "\033[1m\033[31m"      /* Red */
 #define GREEN   "\033[1m\033[32m"      /* Green */
 #define YELLOW  "\033[1m\033[33m"      /* Yellow */
@@ -40,6 +41,10 @@
 #define clear() printf("\e[1;1H\e[2J") // Clear screen
 
 // STRUCTURES ==========================================================
+/**
+* \typdef config
+* \brief A type that can hold configuration options for a game
+*/
 typedef struct config{
     int size;           //snake size
     int AI_version;
@@ -53,7 +58,6 @@ int move(snake* s, direction d, field* map);
 void pop_item(field* map);
 
 // Input/Output ========================================================
-int kbhit(void);
 bool key_is_p1_dir(char c);
 bool key_is_p2_dir(char c);
 direction key_to_dir(char c);

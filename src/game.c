@@ -29,6 +29,7 @@
 */
 void play(config cfg) {
     clear();
+
     //creating field
     field* map = new_field();
     if (cfg.size > map->height/2) {
@@ -39,21 +40,21 @@ void play(config cfg) {
     }
 
     //creating snakes
-    coord start_pos = new_coord(map->height/2, map->width/5); //Starting position of snake depending on size of the window
-    coord start_pos2 = new_coord(map->height/2, 4*map->width/5); //Starting position of snake depending on size of the window
-    snake* s = new_snake(T_SNAKE, cfg.size, start_pos, map); //Create snake with size 10 at start_pos on map
+    coord start_pos = new_coord(map->height/2, map->width/5);           //Starting position of snake depending on size of the window
+    coord start_pos2 = new_coord(map->height/2, 4*map->width/5);        //Starting position of snake depending on size of the window
+    snake* s = new_snake(T_SNAKE, cfg.size, start_pos, map);            //Create snake with size 10 at start_pos on map
     snake* schlanga = new_snake(T_SCHLANGA, cfg.size, start_pos2, map); //Create snake with size 10 at start_pos on map
 
-    queue p1_queue = new_queue(MAX_INPUT_STACK);
-    queue p2_queue = new_queue(MAX_INPUT_STACK);
+    queue p1_queue = new_queue(MAX_INPUT_STACK);    //queue used to stack p1 input
+    queue p2_queue = new_queue(MAX_INPUT_STACK);    //queue used to stack p2 input
 
-    char c;    //key that is pressed
-    int ret;   //value returned by 'read()', 0 if no new key was pressed
+    char c;               //key that is pressed
+    int ret;              //value returned by 'read()', 0 if no new key was pressed
+    bool snake_dead;      //True if the snake is dead.
+    bool schlanga_dead;   //True if the schlanga died.
+    int random_item;      //Random integer deciding if an item pops or not
     direction cur_dir;
-    bool snake_dead;   //True if the snake is dead.
-    bool schlanga_dead; //True if the schlanga died.
 
-    int random_item; //Random integer deciding if an item pops or not
     mode_raw(1);
 
     //Main loop
@@ -169,7 +170,7 @@ void play(config cfg) {
 * \fn int move(snake* s, direction d, field* map);
 * \brief operates on a snake structure to make it move one step with the 'd'
 *        direction. This function does not protect the snake from going into its neck.
-*        This function also cares for collision management.
+*        This function also cares for collision management and display update.
 * \return Number corresponding to an event : 0 if snake/schlanga moves peacefully
 *                                            1 if snake/schlanga dies
 */
@@ -180,8 +181,8 @@ int move(snake* s, direction d, field* map) {
     coord c_tail = get_tail_coord(s);
 
     s->head = get_tail(s); //Index of head becomes index of old tail.
-                       //We then replace the coordinates of the old tail
-                       //with the coordinates of the new head
+                           //We then replace the coordinates of the old tail
+                           //with the coordinates of the new head
 
     //Updating snake's head coordinates
     s->dir = d;
@@ -210,11 +211,10 @@ int move(snake* s, direction d, field* map) {
 
     //COLLISIONS
     square temp_square = get_square_at(map, get_head_coord(s));
-    //~ if (temp_square != EMPTY) {
-        //~ return 1;
+
 	int collision;
 	int popwall;
-	//~ coord pos_wall;
+
     switch(temp_square) {
 		case WALL:
 			//~ write(2, "hit a wall\n", 11*sizeof(char));
@@ -273,7 +273,6 @@ int move(snake* s, direction d, field* map) {
 	}
 }
 
-//Items ===============================================================
 /**
 * \fn void pop_item(field* map);
 * \brief adds a random item to the field.
@@ -395,7 +394,7 @@ void print_to_pos(coord pos, char c) {
 }
 
 /**
-* \fn void print_to_pos(coord pos, char c, char* color);
+* \fn void print_to_pos_colored(coord pos, char c, char* color);
 * \brief prints the character 'c' at the given position in chosen color
 * \details this functions sets the cursor to [x,y] pos and
 *          prints the 'c' param with chosen color

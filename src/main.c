@@ -29,7 +29,9 @@ void about(){
 * \brief Displays info about how to play the game
 */
 void instructions(){
-    printf("To move your snake, use ZQSD. (Z for up, S for down, Q for left and D for right.)\n");
+    printf("Moving snakes :\n\
+        Player 1 : use ZQSD. (Z for up, S for down, Q for left and D for right.)\n\
+        Player 2 : use 5123. (5 for up, 2 for down, 1 for left and 3 for right.)\n");
 }
 
 /**
@@ -51,9 +53,10 @@ int main(){
 
     clear();
     srand(time(NULL));
-    printf("==================================\n");
-    printf("||          MAC² SNAKE          ||\n");
-    printf("==================================\n");
+    printf("==============================================\n");
+    printf("||             RNGESUS PRESENTS             ||\n");
+    printf("||    (¯·._.·[SNAKE VS. SCHLANGA]·._.·¯)    ||\n");
+    printf("==============================================\n");
 
     int choice;
     bool ok = false;
