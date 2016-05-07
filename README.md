@@ -11,16 +11,21 @@ pour linker :
 # Pour commenter:
 ```
 /**
-* \fn 
-* \brief
+* \fn <prototype>
+* \brief <brève description>
+* \details <description détaillée>
+* \param <nom param> <description>
+* \returns <ce que la fonction renvoie>
 */
 ```
+
+
 
 # instructions pour commencer a participer :  
 
 `sudo apt-get install git`
 
-déplacez vous dans le répertoire de votre choix 
+déplacez vous dans le répertoire de votre choix  
 `git init`  
 cette commande crée un dossier .git qui est utilisé par git pour stoquer les informations de versionning sur le projet  
 
@@ -54,75 +59,3 @@ note : il est TRES important de mettre un message adéquat, qui décrive les mod
 
 pour envoyer vos commits sur gitlab  
 `git push origin master`  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-
-zenbu zenbu zenbu
-
