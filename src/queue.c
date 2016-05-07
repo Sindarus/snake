@@ -10,18 +10,6 @@
 #include "queue.h"
 
 /**
-* \struct queue
-* \brief FILO queue with data of type 'direction'.
-*/
-struct queue{
-    direction* data;
-    int size;
-    int start;
-    int end;
-    bool is_full;
-};
-
-/**
 * \fn queue new_queue(int size);
 * \brief Used to create a variable of type 'queue'
 * \details This is a FILO queue that can store 'direction' variables

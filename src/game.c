@@ -15,25 +15,11 @@
 
 #include "types.h"
 #include "AI.h"
+#include "queue.h"
 
 #include "game.h"
 
-/**
-* \fn config new_config();
-* \brief Returns a newly created 'config' variable, with 'players[i]' = 0.
-*/
-config new_config(){
-    config cfg;
-
-	int i;
-    for(i=0; i<MAX_PLAYERS; i++){
-        cfg.players[i] = 0;
-    }
-
-    return cfg;
-}
-
-// Game ================================================================
+//Game ================================================================
 /**
 * \fn void play(config cfg);
 * \brief Function that launches a game and makes it run.
@@ -53,103 +39,130 @@ void play(config cfg) {
     }
 
     //creating snakes
-    coord start_pos = new_coord(map->height/2, map->width/5); // Starting position of snake depending on size of the window
-    coord start_pos2 = new_coord(map->height/2, 4*map->width/5); // Starting position of snake depending on size of the window
-    snake* s = new_snake(T_SNAKE, cfg.size, start_pos, map); // Create snake with size 10 at start_pos on map
-    snake* schlanga = new_snake(T_SCHLANGA, cfg.size, start_pos2, map); // Create snake with size 10 at start_pos on map
+    coord start_pos = new_coord(map->height/2, map->width/5); //Starting position of snake depending on size of the window
+    coord start_pos2 = new_coord(map->height/2, 4*map->width/5); //Starting position of snake depending on size of the window
+    snake* s = new_snake(T_SNAKE, cfg.size, start_pos, map); //Create snake with size 10 at start_pos on map
+    snake* schlanga = new_snake(T_SCHLANGA, cfg.size, start_pos2, map); //Create snake with size 10 at start_pos on map
 
-    char c;    // key that is pressed
-    int ret;   // value returned by 'read()', 0 if no new key was pressed
+    queue p1_queue = new_queue(MAX_INPUT_STACK);
+    queue p2_queue = new_queue(MAX_INPUT_STACK);
+
+    char c;    //key that is pressed
+    int ret;   //value returned by 'read()', 0 if no new key was pressed
     direction cur_dir;
+    bool snake_dead;   //True if the snake is dead.
+    bool schlanga_dead; //True if the schlanga died.
 
-    int random_item; // Random integer deciding if an item pops or not
+    int random_item; //Random integer deciding if an item pops or not
     mode_raw(1);
 
-    // Main loop
+    //Main loop
+    //1 - pass time
+    //2 - retrieve and sort input
+    //3 - make snakes move
+    //4 - check if someone died
+    //5 - handle items
     while(1){
+        //1 - let's pass time
         usleep(TIME_STEP * 1000 - map->speed);
 
-        // Input/Output management, choosing snake's direction
-        if( (ret = read(0, &c, sizeof(char))) == -1){
-            perror("read in 'play()'");
-            exit(1);
-        }
-        if(ret != 0){          // Check if user hits keyboard
-            if(c == C_QUIT){                    //if user pushed quit button
+        //2 - let's retrieve and sort every input.
+        while((ret = read(0, &c, sizeof(char))) != 0){
+            if(ret == -1){
+                perror("read in 'play()'");
+                exit(1);
+            }
+
+            if(c == C_QUIT){
                 mode_raw(0);
                 clear();
                 free_all(map, s, schlanga);
                 return;
             }
-
-            if(key_is_dir(c)) {                 //if user pushed a direction
-                cur_dir = key_to_dir(c);        //retrieves the direction
-
-                //if the key pressed is the opposite direction of the snake
-                if(cur_dir == opposite(s->dir)){
-                    cur_dir = s->dir;
+            else if(key_is_p1_dir(c)){
+                //if the key is a move key for player 1:
+                if(! queue_full(&p1_queue)){
+                    enqueue(&p1_queue, key_to_dir(c));
+                }
+            }
+            else if(cfg.mode == 2 && key_is_p2_dir(c)){
+                if(! queue_full(&p2_queue)){
+                    enqueue(&p2_queue, key_to_dir(c));
                 }
             }
             else{
-                cur_dir = s->dir;
+                //key pressed was a useless key. Do nothing.
             }
         }
-        else {                  //if user hasn't hit the keyboard
-            cur_dir = s->dir;
-        }
 
-        //move snake
+        //3 - let's make snakes move
+        //snake
         if (map->freeze_snake > 0) {
-			map->freeze_snake--;
-		} else {
-			if(move(s, cur_dir, map)){
-				free_all(map, s, schlanga);
-				mode_raw(0);
-				clear();
-				print_msg(MSG_LOOSE);
-				return;
-			}
-		}
-
-        // choose schlanga direction
-        switch(cfg.AI_version){
-            case 1:
-                cur_dir = rngesus(schlanga);
-                break;
-            case 2:
-                cur_dir = rngesus2(schlanga, map);
-                break;
-            case 3:
-                cur_dir = spread(schlanga, map);
-                break;
-            case 4:
-                cur_dir = aggro_dist(schlanga, map, s);
-                break;
-            default:
-                free_all(map, s, schlanga); mode_raw(0); clear();
-                printf("In 'move()' : AI_version not recognized.\n");
-                exit(1);
+            map->freeze_snake--;
+        }
+        else{
+            cur_dir = (! queue_empty(&p1_queue)) ? dequeue(&p1_queue) : s->dir;
+            cur_dir = (cur_dir == opposite(s->dir)) ? s->dir : cur_dir;
+            snake_dead = move(s, cur_dir, map);
         }
 
-        //move schlanga
+        //schlanga
         if (map->freeze_schlanga > 0) {
-			map->freeze_schlanga--;
-		} else {
-			if(move(schlanga, cur_dir, map)){
-				free_all(map, s, schlanga);
-				mode_raw(0);
-				clear();
-				print_msg(MSG_WIN);
-				return;
-			}
-		}
+            map->freeze_schlanga--;
+        }
+        else{
+            if(cfg.mode == 2){
+                cur_dir = (! queue_empty(&p2_queue)) ? dequeue(&p2_queue) : schlanga->dir;
+                cur_dir = (cur_dir == opposite(schlanga->dir)) ? schlanga->dir : cur_dir;
+            }
+            else{
+                switch(cfg.AI_version){
+                    case 1:
+                        cur_dir = rngesus(schlanga);
+                        break;
+                    case 2:
+                        cur_dir = rngesus2(schlanga, map);
+                        break;
+                    case 3:
+                        cur_dir = spread(schlanga, map);
+                        break;
+                    case 4:
+                        cur_dir = aggro_dist(schlanga, map, s);
+                        break;
+                    default:
+                        free_all(map, s, schlanga); mode_raw(0); clear();
+                        printf("In 'move()' : AI_version not recognized.\n");
+                        exit(1);
+                        break;
+                }
+            }
+            schlanga_dead = move(schlanga, cur_dir, map);
+        }
 
+        //4 - let's check if someone has died
+        if(schlanga_dead){
+			free_all(map, s, schlanga);
+			mode_raw(0);
+			clear();
+			print_msg("     SCHLANGA DIED      ");
+			return;
+		}
+        else if(snake_dead){
+            free_all(map, s, schlanga);
+            mode_raw(0);
+            clear();
+            print_msg("       SNAKE DIED       ");
+            return;
+        }
+
+        //5 - let's gereate (or not) items
 		random_item = rand() % 10;
 		if (random_item == 0) {
 			pop_item(map);
 		}
+
         fflush(stdout);
-    }// end while(1)
+    }//end while(1)
 }
 
 /**
@@ -166,11 +179,11 @@ int move(snake* s, direction d, field* map) {
     coord c_head = get_head_coord(s);
     coord c_tail = get_tail_coord(s);
 
-    s->head = get_tail(s); // Index of head becomes index of old tail.
-                       // We then replace the coordinates of the old tail
-                       // with the coordinates of the new head
+    s->head = get_tail(s); //Index of head becomes index of old tail.
+                       //We then replace the coordinates of the old tail
+                       //with the coordinates of the new head
 
-    // Updating snake's head coordinates
+    //Updating snake's head coordinates
     s->dir = d;
     if (d == UP) {
         s->body[s->head].x = c_head.x-1;
@@ -251,7 +264,7 @@ int move(snake* s, direction d, field* map) {
     }
 
 	if (collision == 0) {
-		// UPDATE FIELD
+		//UPDATE FIELD
 		set_square_at(map, get_head_coord(s), s->type);
 		set_square_at(map, c_tail, EMPTY);
 		return 0;
@@ -260,7 +273,7 @@ int move(snake* s, direction d, field* map) {
 	}
 }
 
-// Items ===============================================================
+//Items ===============================================================
 /**
 * \fn void pop_item(field* map);
 * \brief adds a random item to the field.
@@ -311,13 +324,23 @@ void pop_item(field* map) {
     }
 }
 
-// Input/Output ========================================================
+//Input/Output ========================================================
 /**
-* \fn bool key_is_dir(char c);
-* \return 1 if the given char 'c' corresponds to a direction key. 0 otherwise.
+* \fn bool key_is_p1_dir(char c);
+* \return 1 if the given char 'c' corresponds to a direction key for player 1.
+*         0 otherwise.
 */
-bool key_is_dir(char c){
-    return (c == C_UP || c == C_DOWN || c == C_LEFT || c == C_RIGHT);
+bool key_is_p1_dir(char c){
+    return (c == C_P1_UP || c == C_P1_DOWN || c == C_P1_LEFT || c == C_P1_RIGHT);
+}
+
+/**
+* \fn bool key_is_p2_dir(char c);
+* \return 1 if the given char 'c' corresponds to a direction key for player 2.
+*         0 otherwise.
+*/
+bool key_is_p2_dir(char c){
+    return (c == C_P2_UP || c == C_P2_DOWN || c == C_P2_LEFT || c == C_P2_RIGHT);
 }
 
 /**
@@ -327,16 +350,28 @@ bool key_is_dir(char c){
 */
 direction key_to_dir(char c){
     switch(c){
-        case C_UP:
+        case C_P1_UP:
             return UP;
             break;
-        case C_DOWN:
+        case C_P2_UP:
+            return UP;
+            break;
+        case C_P1_DOWN:
             return DOWN;
             break;
-        case C_LEFT:
+        case C_P2_DOWN:
+            return DOWN;
+            break;
+        case C_P1_LEFT:
             return LEFT;
             break;
-        case C_RIGHT:
+        case C_P2_LEFT:
+            return LEFT;
+            break;
+        case C_P1_RIGHT:
+            return RIGHT;
+            break;
+        case C_P2_RIGHT:
             return RIGHT;
             break;
         default:
@@ -346,7 +381,7 @@ direction key_to_dir(char c){
     }
 }
 
-// Display =============================================================
+//Display =============================================================
 /**
 * \fn void print_to_pos(coord pos, char c);
 * \brief prints the character 'c' at the given position
@@ -421,7 +456,7 @@ void mode_raw(int activate)
         if(raw_activated) return;   //if it's already activated, then do nothing
 
         tcsetattr(STDIN_FILENO, TCSANOW, &term_raw); //apply raw-mode configuration
-        printf("\e[?25l"); // Hide cursor
+        printf("\e[?25l"); //Hide cursor
 
         raw_activated = true;
     }
@@ -439,31 +474,14 @@ void mode_raw(int activate)
 }
 
 /**
-* \fn void print_msg(int msg);
+* \fn void print_msg(char* msg);
 * \brief prints a specific message onto the screen.
-* \param msg Can be one of thoses : MSG_LOOSE, MSG_WIN or MSG_DRAW
 * \details Warning : console has to be working in the usual way for theses messages
 *          to be printed correctly. Use 'mode_raw(0)' to get the console back
 *          back to normal.
 */
-void print_msg(int msg){
-    switch(msg){
-        case MSG_LOOSE:
-            printf("----------------------------\n");
-            printf("|        GAME_OVER         |\n");
-            printf("----------------------------\n");
-            break;
-        case MSG_WIN:
-            printf("----------------------------\n");
-            printf("|          YOU_WIN         |\n");
-            printf("----------------------------\n");
-            break;
-        case MSG_DRAW:
-            printf("----------------------------\n");
-            printf("|        IT'S A DRAW       |\n");
-            printf("----------------------------\n");
-            break;
-        default:
-            break;
-    }
+void print_msg(char* msg){
+    printf("----------------------------\n");
+    printf("| %s |\n", msg);
+    printf("----------------------------\n");
 }

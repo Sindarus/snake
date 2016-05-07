@@ -57,18 +57,17 @@ int main(){
 
     int choice;
     bool ok = false;
-    config cfg = new_config();
-    cfg.players[0] = 1; //player 0 is a human
-    cfg.players[1] = 2; //player 1 is an AI
+    config cfg;
 
     while(!ok){
         printf("----------------------------\n");
         printf("|           MENU           |\n");
         printf("----------------------------\n");
         printf("0 - Quit game\n");
-        printf("1 - Play\n");
-        printf("2 - How to play ?\n");
-        printf("3 - About this program\n");
+        printf("1 - Play against an AI\n");
+        printf("2 - Play with another human\n");
+        printf("3 - How to play ?\n");
+        printf("4 - About this program\n");
         printf("Please enter your choice.\n");
         if(scanf("%i", &choice) == 0){
             printf("Menu error\n");
@@ -80,6 +79,8 @@ int main(){
                 printf("Good bye !\n");
                 break;
             case 1:
+                cfg.mode = 1;
+
                 printf("Enter snake size :\n");
                 if(scanf("%i", &(cfg.size)) == 0){
                     printf("Menu error\n");
@@ -105,9 +106,23 @@ int main(){
                 }
                 break;
             case 2:
-                instructions();
+                cfg.mode = 2;
+
+                printf("Enter snake size :\n");
+                if(scanf("%i", &(cfg.size)) == 0){
+                    printf("Menu error\n");
+                    exit(1);
+                }
+                if(cfg.size < 1){
+                    cfg.size = 1;
+                }
+
+                play(cfg);
                 break;
             case 3:
+                instructions();
+                break;
+            case 4:
                 about();
                 break;
             default :

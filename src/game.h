@@ -8,25 +8,28 @@
 #include "types.h"
 
 // CONSTANTS ============================================================
-#define C_UP 122        /**< id number of key to move up. 122 = z      */
-#define C_DOWN 115      /**< number of key to move down. 115 = s    */
-#define C_LEFT 113      /**< number of key to move left. 113 = q    */
-#define C_RIGHT 100     /**< number of key to move right. 100 = d   */
-#define C_QUIT 27       /**< number of key to quit. 27 = esc      */
+#define C_P1_UP 'z'        /**< key to move player 1 up.       */
+#define C_P1_DOWN 's'      /**< key to move player 1 down.     */
+#define C_P1_LEFT 'q'      /**< key to move player 1 left.     */
+#define C_P1_RIGHT 'd'     /**< key to move player 1 right.    */
+
+#define C_P2_UP '5'        /**< key to move player 2 up.       */
+#define C_P2_DOWN '2'      /**< key to move player 2 down.     */
+#define C_P2_LEFT '1'      /**< key to move player 2 left.     */
+#define C_P2_RIGHT '3'     /**< key to move player 2 right.    */
+
+#define C_QUIT 27          /**< number of key to quit. 27 = esc      */
 
 #define MIN_WINDOW_WIDTH 15
 #define MIN_WINDOW_HEIGHT 15
 
 #define TIME_STEP 150   /**< time between two time steps. In msec. */
 
-#define MSG_LOOSE 1
-#define MSG_WIN 2
-#define MSG_DRAW 3
-
-#define NB_ITEMS 5 /**< number of items in game */
-#define FREEZING_TIME 10 /**< number of iterations during which a snake will be freezed */
-#define ADD_SPEED 25000 /**< add x seconds to usleep */
+#define NB_ITEMS 5        /**< number of items in game */
+#define FREEZING_TIME 10  /**< number of iterations during which a snake will be freezed */
+#define ADD_SPEED 25000   /**< add x seconds to usleep */
 #define MAX_PLAYERS 10
+#define MAX_INPUT_STACK 5 /**< maximum inputs that can stack for a player */
 
 #define RED     "\033[1m\033[31m"      /* Red */
 #define GREEN   "\033[1m\033[32m"      /* Green */
@@ -40,12 +43,10 @@
 typedef struct config{
     int size;           //snake size
     int AI_version;
-    int players[MAX_PLAYERS];   //players[i] = 1 if it is a hooman, 2 if schlanga, 0 if not player
+    int mode;           //1 if human vs schlanga, 2 if human vs human, 3 if human vs humans through server
 } config;
 
 // PROTOTYPES ==========================================================
-config new_config();
-
 // Game ================================================================
 void play(config cfg);
 int move(snake* s, direction d, field* map);
@@ -53,14 +54,14 @@ void pop_item(field* map);
 
 // Input/Output ========================================================
 int kbhit(void);
-bool key_is_dir(char c);
+bool key_is_p1_dir(char c);
+bool key_is_p2_dir(char c);
 direction key_to_dir(char c);
 
 // Display =============================================================
 void print_to_pos(coord pos, char c);
 void print_to_pos_colored(coord pos, char c, char* color);
 void mode_raw(int activate);
-void print_msg(int msg);
-//void display(field* map, snake* s1, snake* s2);
+void print_msg(char* msg);
 
 #endif
