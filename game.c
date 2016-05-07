@@ -25,7 +25,8 @@
 config new_config(){
     config cfg;
 
-    for(int i; i<MAX_PLAYERS; i++){
+	int i;
+    for(i=0; i<MAX_PLAYERS; i++){
         cfg.players[i] = 0;
     }
 
@@ -188,10 +189,10 @@ int move(snake* s, direction d, field* map) {
     //DISPLAY
     print_to_pos(c_tail, ' ');
     if(s->type == T_SNAKE){
-        print_to_pos(s->body[s->head], 's');
+        print_to_pos_colored(s->body[s->head], 's', BLUE);
     }
     if(s->type == T_SCHLANGA){
-        print_to_pos(s->body[s->head], '$');
+        print_to_pos_colored(s->body[s->head], '$', YELLOW);
     }
 
     //COLLISIONS
@@ -366,7 +367,9 @@ void print_to_pos(coord pos, char c) {
 */
 void print_to_pos_colored(coord pos, char c, char* color) {
     #ifndef DO_NOT_DISPLAY
-    printf("%s \033[%d;%dH%c" RESET, color, pos.x, pos.y, c);
+    printf("%s", color);
+    printf("\033[%d;%dH%c", pos.x, pos.y, c);
+    printf(RESET_COLOR);
     #endif
 }
 
