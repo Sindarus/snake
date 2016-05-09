@@ -53,22 +53,12 @@ bool test_new_field(){
 bool test_new_snake(){
     field* map = new_field();
     snake* s = new_snake(T_SNAKE, 6, new_coord(1, 1), map);
-    int i;
 
     if(s->head != 5 || s->size != 6 ||
             s->body[5].x != 1 || s->body[5].y != 1){
         free_field(map);
         free_snake(s);
         return 0;
-    }
-
-    for(i=0; i<6; i++){
-        if(map->f[s->body[i].x][s->body[i].y] != SNAKE &&
-                map->f[s->body[i].x][s->body[i].y] != SCHLANGA){
-            free_field(map);
-            free_snake(s);
-            return 0;
-        }
     }
 
     free_field(map);
@@ -155,7 +145,7 @@ bool test_get_tail(){
     snake* s = new_snake(T_SNAKE, 8, new_coord(1,1), map);
 
     coord c = s->body[get_tail(s)];
-    if(map->f[c.x][c.y] != SNAKE){
+    if(c.x != -1 && c.y != -1){
         free_snake(s);
         free_field(map);
         return 0;
@@ -187,7 +177,7 @@ bool test_get_tail_coord(){
     snake* s = new_snake(T_SNAKE, 8, new_coord(1,1), map);
 
     coord c = get_tail_coord(s);
-    if(map->f[c.x][c.y] != SNAKE){
+    if(c.x != -1 && c.y != -1){
         free_snake(s);
         free_field(map);
         return 0;

@@ -37,12 +37,13 @@ int detect(snake* s, direction c, field* map){
 
 /**
 * \fn bool not_in(coord c, coord* tableau, int taille);
-* \brief Return true if the 'c' coord is in the array 'tableau' (of length 'taille'). Else return false.
+* \returns True if the 'c' coord is not in 'array' (of length 'size').
+*          False otherwise.
 */
-bool not_in(coord c, coord* tableau, int taille){
+bool not_in(coord c, coord* array, int size){
     int i;
-    for(i=0;i<taille;i++){
-        if (are_equal(c,tableau[i])){
+    for(i=0;i<size;i++){
+        if (are_equal(c,array[i])){
             return false;
         }
     }

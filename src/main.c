@@ -102,9 +102,9 @@ int main(){
                     play(cfg);
                 }
                 else{
-                    printf("version of AI not implemented. Selecting 4 instead. Press enter to continue.");
+                    printf("version of AI not implemented. Selecting 4 instead. Enter 1 to continue.\n");
                     cfg.AI_version = 4;
-                    scanf("%i", &choice); //"press any key to continue"
+                    scanf("%i", &choice);
                     play(cfg);
                 }
                 break;

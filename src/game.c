@@ -32,12 +32,6 @@ void play(config cfg) {
 
     //creating field
     field* map = new_field();
-    if (cfg.size > map->height/2) {
-        free_field(map);
-        clear();
-        printf("Please increase your window size or decrease your snake size\n");
-        return;
-    }
 
     //creating snakes
     coord start_pos = new_coord(map->height/2, map->width/5);           //Starting position of snake depending on size of the window
@@ -388,6 +382,7 @@ direction key_to_dir(char c){
 *          prints the 'c' param
 */
 void print_to_pos(coord pos, char c) {
+    if(pos.x == -1 && pos.y == -1) return;
     #ifndef DO_NOT_DISPLAY
     printf("\033[%d;%dH%c", pos.x, pos.y, c);
     #endif
@@ -400,6 +395,7 @@ void print_to_pos(coord pos, char c) {
 *          prints the 'c' param with chosen color
 */
 void print_to_pos_colored(coord pos, char c, char* color) {
+    if(pos.x == -1 && pos.y == -1) return;
     #ifndef DO_NOT_DISPLAY
     printf("%s", color);
     printf("\033[%d;%dH%c", pos.x, pos.y, c);

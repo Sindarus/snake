@@ -81,7 +81,7 @@ field* new_field() {
             }
         }
     }
-            
+
     map->freeze_snake = map->freeze_schlanga = 0;
     map->speed = 0;
 
@@ -102,19 +102,24 @@ snake* new_snake(t_type type, int size, coord start_pos, field* map) {
     s->size = size;
     s->dir = UP;
 
-    int i;
-    for (i = size-1; i>=0; i--) {
-        s->body[i] = start_pos;  //at first, the snake fits in one square
-        if(s->type == T_SNAKE){
-            print_to_pos_colored(start_pos, 's', BLUE);
-        }
-        if(s->type == T_SCHLANGA){
-            print_to_pos_colored(start_pos, '$', YELLOW);
-        }
-
-        set_square_at(map, start_pos, SNAKE);
-        start_pos.x++;
+    s->body[size-1] = start_pos;  //at first, the snake fits in one square
+    for(int i = size-2; i >= 0; i--){
+        s->body[i].x = -1;
+        s->body[i].y = -1;
     }
+
+
+    if(s->type == T_SNAKE){
+        print_to_pos_colored(start_pos, 's', BLUE);
+    }
+    if(s->type == T_SCHLANGA){
+        print_to_pos_colored(start_pos, '$', YELLOW);
+    }
+
+    set_square_at(map, start_pos, SNAKE);
+
+
+
     return s;
 }
 
@@ -252,6 +257,7 @@ square get_square_at(field* map, coord c){
 * \brief Sets 'square' at 'c' on 'map'.
 */
 void set_square_at(field* map, coord c, square stuff){
+    if(c.x == -1 && c.y == -1) return;
     map->f[c.x][c.y] = stuff;
 }
 
