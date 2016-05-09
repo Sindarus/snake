@@ -49,6 +49,12 @@ bool not_in(coord c, coord* tableau, int taille){
     return true;
 }
 
+/*
+* \fn rec(field* map, coord c, coord* tableau, int* i);
+* \brief Base of the recursive function spread.
+* Return how many empty squares are free in a given space.
+* Marks every square already visited in the array "tableau".
+*/
 int rec(field* map, coord c, coord* tableau, int* i){
     coord up=coord_after_dir(c,UP);
     coord down=coord_after_dir(c,DOWN);
@@ -71,11 +77,20 @@ int rec(field* map, coord c, coord* tableau, int* i){
     return 0;
 }
 
+/*
+* \fn float dist(coord depart, coord arrivee);
+* \brief Return the euclidian distance between 2 points.
+*/
 float dist(coord depart, coord arrivee){
     return (sqrtf((depart.x-arrivee.x)*(depart.x-arrivee.x) + (depart.y-arrivee.y)*(depart.y-arrivee.y)));
 }
 
-bool compare(float a, float b){
+/*
+* \fn compare_aggro(float a, float b);
+* \brief Used in best_aggro.
+* The function used to compare distances in aggro_dist.
+*/
+bool compare_aggro(float a, float b){
     if (a==0){
         return false;
     }
@@ -87,21 +102,66 @@ bool compare(float a, float b){
     }
 }
 
-direction best(float a, float b, float c, float d, snake* s, field* map){
-    if ((compare(c,a)) && (compare(c,b)) && (compare(c,d))){
+/*
+* \fn direction best_aggro(float a, float b, float c, float d, snake* s, field* map)
+* \brief Base of the aggro_dist AI.
+* Returns the best choice between the different distances for an aggressiv AI (therefore the shortest).
+*/
+direction best_aggro(float a, float b, float c, float d, snake* s, field* map){
+    if ((compare_aggro(c,a)) && (compare_aggro(c,b)) && (compare_aggro(c,d))){
         return LEFT;
     }
-    else if ((compare(b,a)) && (compare(b,c)) && (compare(b,d))){
+    else if ((compare_aggro(b,a)) && (compare_aggro(b,c)) && (compare_aggro(b,d))){
         return DOWN;
     }
-    else if ((compare(a,b)) && (compare(a,c)) && (compare(a,d))){
+    else if ((compare_aggro(a,b)) && (compare_aggro(a,c)) && (compare_aggro(a,d))){
         return UP;
     }
-    else if ((compare(d,a)) && (compare(d,b)) && (compare(d,c))){
+    else if ((compare_aggro(d,a)) && (compare_aggro(d,b)) && (compare_aggro(d,c))){
         return RIGHT;
     }
     else{
-        return rngesus2(s,map);
+        return spread(s,map);
+    }
+}
+
+/*
+* \fn compare_def(float a, float b);
+* \brief Used in best_def.
+* The function used to compare distances in defensif_dist.
+*/
+bool compare_def(float a, float b){
+    if (a==0){
+        return false;
+    }
+    else if (b==0){
+        return true;
+    }
+    else {
+        return (a>b);
+    }
+}
+
+/*
+* \fn direction best_def(float a, float b, float c, float d, snake* s, field* map)
+* \brief Base of the defensif_dist AI.
+* Returns the best choice between the different distances for a defensiv AI (therefore the longest).
+*/
+direction best_def(float a, float b, float c, float d, snake* s, field* map){
+    if ((compare_def(c,a)) && (compare_def(c,b)) && (compare_def(c,d))){
+        return LEFT;
+    }
+    else if ((compare_def(b,a)) && (compare_def(b,c)) && (compare_def(b,d))){
+        return DOWN;
+    }
+    else if ((compare_def(a,b)) && (compare_def(a,c)) && (compare_def(a,d))){
+        return UP;
+    }
+    else if ((compare_def(d,a)) && (compare_def(d,b)) && (compare_def(d,c))){
+        return RIGHT;
+    }
+    else{
+        return spread(s,map);
     }
 }
 
@@ -190,23 +250,174 @@ direction spread(snake* s,field* map){
     }
 }
 
+/*
+* \fn direction aggro_dist(snake* s, field* map, snake* enemy);
+* \brief Chooses a direction the closest to the enemy's head.
+* Avoids walls and reacts randomly once it is close enough.
+*/
 direction aggro_dist(snake* s, field* map, snake* enemy){
     coord end = get_head_coord(enemy);
     float a=0,b=0,c=0,d=0;
     coord start = get_head_coord(s);
 
-    if (detect(s,UP,map)){
-        a=dist(coord_after_dir(start,UP),end);
-    }
-    if (detect(s,DOWN,map)){
-        b=dist(coord_after_dir(start,DOWN),end);
-    }
-    if (detect(s,LEFT,map)){
-        c=dist(coord_after_dir(start,LEFT),end);
-    }
-    if (detect(s,RIGHT,map)){
-        d=dist(coord_after_dir(start,RIGHT),end);
+    if (dist(start,end) < 6){
+        spread(s,map);
     }
 
-    return best(a,b,c,d,s,map);
+    else{ 
+        if (detect(s,UP,map)){
+            a=dist(coord_after_dir(start,UP),end);
+        }
+        if (detect(s,DOWN,map)){
+            b=dist(coord_after_dir(start,DOWN),end);
+        }
+        if (detect(s,LEFT,map)){
+            c=dist(coord_after_dir(start,LEFT),end);
+        }
+        if (detect(s,RIGHT,map)){
+            d=dist(coord_after_dir(start,RIGHT),end);
+        }
+        return best_aggro(a,b,c,d,s,map);
+    }
+    return spread(s,map);
+}
+
+/*
+* \fn direction defensif_dist(snake* s, field* map, snake* enemy);
+* \brief Chooses a direction the further from the enemy's head.
+* Avoids walls and reacts randomly once it is far enough.
+*/
+direction defensif_dist(snake* s, field* map, snake* enemy){
+    coord end = get_head_coord(enemy);
+    float a=0,b=0,c=0,d=0;
+    coord start = get_head_coord(s);
+
+    if (dist(start,end) > 6){
+        spread(s,map);
+    }
+
+    else{ 
+        if (detect(s,UP,map)){
+            a=dist(coord_after_dir(start,UP),end);
+        }
+        if (detect(s,DOWN,map)){
+            b=dist(coord_after_dir(start,DOWN),end);
+        }
+        if (detect(s,LEFT,map)){
+            c=dist(coord_after_dir(start,LEFT),end);
+        }
+        if (detect(s,RIGHT,map)){
+            d=dist(coord_after_dir(start,RIGHT),end);
+        }
+        return best_def(a,b,c,d,s,map);
+    }
+    return spread(s,map);
+}
+
+direction heat_map(snake* s, field* map){
+    float** heat;
+    float** tampon;
+    coord c;
+    square q;
+    int i,j,k;
+
+    coord start=(s->body[s->head]);
+    coord u=coord_after_dir(start,UP);
+    coord d=coord_after_dir(start,DOWN);
+    coord l=coord_after_dir(start,LEFT);
+    coord r=coord_after_dir(start,RIGHT);
+
+    int a1,a2,a3,a4;
+
+    heat = malloc(map->height*sizeof(float*));
+    tampon = malloc(map->height*sizeof(float*));
+    for(j=0;j<map->height;j++){
+        heat[j] = malloc(map->width*sizeof(float));
+        tampon[j] = malloc(map->width*sizeof(float));
+    }
+
+    for(j=0;j<map->height;j++){
+        for(k=0;k<map->width;k++){
+            c=new_coord(j,k);
+            q=get_square_at(map,c);
+            switch(q){
+            case WALL:
+                heat[j][k]=-3;
+                tampon[j][k]=-3;
+                break;
+            case SCHLANGA:
+                heat[j][k]=0;
+                tampon[j][k]=0;
+                break;
+            case SNAKE:
+                heat[j][k]=+5;
+                tampon[j][k]=+5;
+                break;
+            case FOOD:
+                heat[j][k]=+2;
+                tampon[j][k]=+2;
+                break;
+            case POPWALL:
+                heat[j][k]=+3;
+                tampon[j][k]=+3;
+                break;
+            case HIGHSPEED:
+                heat[j][k]=+4;
+                tampon[j][k]=+4;
+                break;
+            case LOWSPEED:
+                heat[j][k]=-1;
+                tampon[j][k]=-1;
+                break;
+            case FREEZE:
+                heat[j][k]=+1;
+                tampon[j][k]=+1;
+                break;
+            case EMPTY:
+                heat[j][k]=0;
+                tampon[j][k]=0;
+                break;
+            }
+        }
+    }
+    
+    for(i=0;i<3;i++){
+        for(j=1;j<(map->height-1);j++){
+            for(k=1;k<(map->width-1);k++){
+                c=new_coord(j,k);
+                if (get_square_at(map,c) == EMPTY){
+                    tampon[j][k]=(heat[j-1][k-1]+heat[j-1][k]+heat[j-1][k+1]+heat[j][k-1]+heat[j][k]+heat[j][k+1]+heat[j+1][k-1]+heat[j+1][k]+heat[j+1][k+1])/9;
+                }
+            }
+        }
+        for(j=1;j<map->height;j++){
+            for(k=1;k<map->width;k++){
+                heat[j][k]=tampon[j][k];
+            }
+        }
+    }
+
+    a1=heat[u.x][u.y];
+    a2=heat[d.x][d.y];
+    a3=heat[l.x][l.y];
+    a4=heat[r.x][r.y];
+
+    for(j=0;j<map->height;j++){
+        free(heat[j]);
+        free(tampon[j]);
+    }
+
+    if( (a1>=a2) && (a1>=a3) && (a1>=a4) ){
+        return UP;
+    }
+    else if ( (a2>=a1) && (a2>=a3) && (a2>=a4) ){
+        return DOWN;
+    }
+    else if ( (a3>=a2) && (a3>=a1) && (a1>=a4) ){
+        return LEFT;
+    }
+    else {
+        return RIGHT;
+    }
+    return spread(s,map);
 }
