@@ -24,18 +24,18 @@ int detect(snake* s, direction c, field* map){
     int a=s->body[s->head].x;
     int b=s->body[s->head].y;
     if (c == UP) {
-        return (map->f[a-1][b] == EMPTY);
+        return !(map->f[a-1][b] == WALL || map->f[a-1][b] == SNAKE || map->f[a-1][b] == SCHLANGA);
     } else if (c == LEFT) {
-        return (map->f[a][b-1] == EMPTY);
+        return !(map->f[a][b-1] == WALL || map->f[a][b-1] == SNAKE || map->f[a][b-1] == SCHLANGA);
     } else if (c == RIGHT) {
-        return (map->f[a][b+1] == EMPTY);
+        return !(map->f[a][b+1] == WALL || map->f[a][b+1] == SNAKE || map->f[a][b+1] == SCHLANGA);
     } else if (c == DOWN) {
-        return (map->f[a+1][b] == EMPTY);
+        return !(map->f[a+1][b] == WALL || map->f[a+1][b] == SNAKE || map->f[a+1][b] == SCHLANGA);
     }
     else{return 1;}
 }
 
-/*
+/**
 * \fn bool not_in(coord c, coord* tableau, int taille);
 * \brief Return true if the 'c' coord is in the array 'tableau' (of length 'taille'). Else return false.
 */
@@ -49,7 +49,7 @@ bool not_in(coord c, coord* tableau, int taille){
     return true;
 }
 
-/*
+/**
 * \fn rec(field* map, coord c, coord* tableau, int* i);
 * \brief Base of the recursive function spread.
 * Return how many empty squares are free in a given space.
@@ -77,7 +77,7 @@ int rec(field* map, coord c, coord* tableau, int* i){
     return 0;
 }
 
-/*
+/**
 * \fn float dist(coord depart, coord arrivee);
 * \brief Return the euclidian distance between 2 points.
 */
@@ -85,7 +85,7 @@ float dist(coord depart, coord arrivee){
     return (sqrtf((depart.x-arrivee.x)*(depart.x-arrivee.x) + (depart.y-arrivee.y)*(depart.y-arrivee.y)));
 }
 
-/*
+/**
 * \fn compare_aggro(float a, float b);
 * \brief Used in best_aggro.
 * The function used to compare distances in aggro_dist.
@@ -102,22 +102,22 @@ bool compare_aggro(float a, float b){
     }
 }
 
-/*
+/**
 * \fn direction best_aggro(float a, float b, float c, float d, snake* s, field* map)
 * \brief Base of the aggro_dist AI.
 * Returns the best choice between the different distances for an aggressiv AI (therefore the shortest).
 */
 direction best_aggro(float a, float b, float c, float d, snake* s, field* map){
-    if ((compare_aggro(c,a)) && (compare_aggro(c,b)) && (compare_aggro(c,d))){
+    if ((compare_aggro(c,a)) && (compare_aggro(c,b)) && (compare_aggro(c,d)) && detect(s,LEFT,map)){
         return LEFT;
     }
-    else if ((compare_aggro(b,a)) && (compare_aggro(b,c)) && (compare_aggro(b,d))){
+    else if ((compare_aggro(b,a)) && (compare_aggro(b,c)) && (compare_aggro(b,d)) && detect(s,DOWN,map)){
         return DOWN;
     }
-    else if ((compare_aggro(a,b)) && (compare_aggro(a,c)) && (compare_aggro(a,d))){
+    else if ((compare_aggro(a,b)) && (compare_aggro(a,c)) && (compare_aggro(a,d)) && detect(s,UP,map)){
         return UP;
     }
-    else if ((compare_aggro(d,a)) && (compare_aggro(d,b)) && (compare_aggro(d,c))){
+    else if ((compare_aggro(d,a)) && (compare_aggro(d,b)) && (compare_aggro(d,c)) && detect(s,RIGHT,map)){
         return RIGHT;
     }
     else{
@@ -125,7 +125,7 @@ direction best_aggro(float a, float b, float c, float d, snake* s, field* map){
     }
 }
 
-/*
+/**
 * \fn compare_def(float a, float b);
 * \brief Used in best_def.
 * The function used to compare distances in defensif_dist.
@@ -142,22 +142,22 @@ bool compare_def(float a, float b){
     }
 }
 
-/*
+/**
 * \fn direction best_def(float a, float b, float c, float d, snake* s, field* map)
 * \brief Base of the defensif_dist AI.
 * Returns the best choice between the different distances for a defensiv AI (therefore the longest).
 */
 direction best_def(float a, float b, float c, float d, snake* s, field* map){
-    if ((compare_def(c,a)) && (compare_def(c,b)) && (compare_def(c,d))){
+    if ((compare_def(c,a)) && (compare_def(c,b)) && (compare_def(c,d)) && detect(s,LEFT,map)){
         return LEFT;
     }
-    else if ((compare_def(b,a)) && (compare_def(b,c)) && (compare_def(b,d))){
+    else if ((compare_def(b,a)) && (compare_def(b,c)) && (compare_def(b,d)) && detect(s,DOWN,map)){
         return DOWN;
     }
-    else if ((compare_def(a,b)) && (compare_def(a,c)) && (compare_def(a,d))){
+    else if ((compare_def(a,b)) && (compare_def(a,c)) && (compare_def(a,d)) && detect(s,UP,map)){
         return UP;
     }
-    else if ((compare_def(d,a)) && (compare_def(d,b)) && (compare_def(d,c))){
+    else if ((compare_def(d,a)) && (compare_def(d,b)) && (compare_def(d,c)) && detect(s,RIGHT,map)){
         return RIGHT;
     }
     else{
@@ -205,7 +205,7 @@ direction rngesus2(snake* s, field* map){
     return dir;
 }
 
-/*
+/**
 * \fn direction spread(snake* s,field* map);
 * \brief Chooses a direction considering how much space is left to move in.
 *        When the choice doesn't matter, rngesus2 will be used.
@@ -250,7 +250,7 @@ direction spread(snake* s,field* map){
     }
 }
 
-/*
+/**
 * \fn direction aggro_dist(snake* s, field* map, snake* enemy);
 * \brief Chooses a direction the closest to the enemy's head.
 * Avoids walls and reacts randomly once it is close enough.
@@ -282,7 +282,7 @@ direction aggro_dist(snake* s, field* map, snake* enemy){
     return spread(s,map);
 }
 
-/*
+/**
 * \fn direction defensif_dist(snake* s, field* map, snake* enemy);
 * \brief Chooses a direction the further from the enemy's head.
 * Avoids walls and reacts randomly once it is far enough.
@@ -314,6 +314,11 @@ direction defensif_dist(snake* s, field* map, snake* enemy){
     return spread(s,map);
 }
 
+/**
+* \fn direction heat_map(snake* s, field* map);
+* \brief AI based on a map heat of the field.
+* Is attracted by the object that will put the enemy in a bad spot and/or the enemy
+*/
 direction heat_map(snake* s, field* map){
     float** heat;
     float** tampon;
@@ -407,16 +412,16 @@ direction heat_map(snake* s, field* map){
         free(tampon[j]);
     }
 
-    if( (a1>=a2) && (a1>=a3) && (a1>=a4) ){
+    if( (a1>=a2) && (a1>=a3) && (a1>=a4) && detect(s,UP,map) ){
         return UP;
     }
-    else if ( (a2>=a1) && (a2>=a3) && (a2>=a4) ){
+    else if ( (a2>=a1) && (a2>=a3) && (a2>=a4) && detect(s,DOWN,map)){
         return DOWN;
     }
-    else if ( (a3>=a2) && (a3>=a1) && (a1>=a4) ){
+    else if ( (a3>=a2) && (a3>=a1) && (a1>=a4) && detect(s,LEFT,map)){
         return LEFT;
     }
-    else {
+    else if ( (a4>=a2) && (a4>=a1) && (a4>=a3) && detect(s,RIGHT,map)){
         return RIGHT;
     }
     return spread(s,map);

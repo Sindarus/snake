@@ -27,5 +27,6 @@ direction rngesus2(snake* s, field* map);
 direction spread(snake* s,field* map);
 direction aggro_dist(snake* s, field* map, snake* enemy);
 direction defensif_dist(snake* s, field* map, snake* enemy);
+direction heat_map(snake* s, field* map);
 
 #endif
