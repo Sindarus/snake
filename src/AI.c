@@ -352,8 +352,8 @@ direction heat_map(snake* s, field* map){
                 tampon[j][k]=-3;
                 break;
             case SCHLANGA:
-                heat[j][k]=0;
-                tampon[j][k]=0;
+                heat[j][k]=-1;
+                tampon[j][k]=-1;
                 break;
             case SNAKE:
                 heat[j][k]=+5;
@@ -387,7 +387,7 @@ direction heat_map(snake* s, field* map){
         }
     }
     
-    for(i=0;i<3;i++){
+    for(i=0;i<5;i++){
         for(j=1;j<(map->height-1);j++){
             for(k=1;k<(map->width-1);k++){
                 c=new_coord(j,k);
@@ -413,16 +413,18 @@ direction heat_map(snake* s, field* map){
         free(tampon[j]);
     }
 
-    if( (a1>=a2) && (a1>=a3) && (a1>=a4) && detect(s,UP,map) ){
+    free(heat); free(tampon);
+
+    if( (a1>a2) && (a1>a3) && (a1>a4) && detect(s,UP,map) ){
         return UP;
     }
-    else if ( (a2>=a1) && (a2>=a3) && (a2>=a4) && detect(s,DOWN,map)){
+    else if ( (a2>a1) && (a2>a3) && (a2>a4) && detect(s,DOWN,map)){
         return DOWN;
     }
-    else if ( (a3>=a2) && (a3>=a1) && (a1>=a4) && detect(s,LEFT,map)){
+    else if ( (a3>a2) && (a3>a1) && (a1>a4) && detect(s,LEFT,map)){
         return LEFT;
     }
-    else if ( (a4>=a2) && (a4>=a1) && (a4>=a3) && detect(s,RIGHT,map)){
+    else if ( (a4>a2) && (a4>a1) && (a4>a3) && detect(s,RIGHT,map)){
         return RIGHT;
     }
     return spread(s,map);
