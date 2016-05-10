@@ -95,6 +95,11 @@ field* new_field() {
 * \returns a pointer to the newly created 'snake' variable
 */
 snake* new_snake(t_type type, int size, int start_pos, field* map) {
+    if(start_pos < 0 || start_pos > 11){
+        printf("In 'new_snake()' : start_pos unknown.\n");
+        exit(1);
+    }
+
     snake* s = malloc(sizeof(snake));
 
     s->type = type;

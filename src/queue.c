@@ -106,3 +106,12 @@ void display_queue_int(queue q){
     }
     printf("<\n");
 }
+
+/**
+* \fn void free_queue(queue* q);
+* \brief Used to free memory used by a queue.
+* \param q A pointer to the queue to display
+*/
+void free_queue(queue* q){
+    free(q->data);
+}

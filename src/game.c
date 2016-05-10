@@ -71,6 +71,8 @@ void play(config cfg) {
             if(c == C_QUIT){
                 mode_raw(0);
                 clear();
+                free_queue(&p1_queue);
+                free_queue(&p2_queue);
                 free_all(map, s, schlanga);
                 return;
             }
@@ -131,6 +133,8 @@ void play(config cfg) {
                         cur_dir = heat_map(schlanga, map);
                         break;
                     default:
+                        free_queue(&p1_queue);
+                        free_queue(&p2_queue);
                         free_all(map, s, schlanga); mode_raw(0); clear();
                         printf("In 'move()' : AI_version not recognized.\n");
                         exit(1);
@@ -142,6 +146,8 @@ void play(config cfg) {
 
         //4 - let's check if someone has died
         if(schlanga_dead){
+            free_queue(&p1_queue);
+            free_queue(&p2_queue);
 			free_all(map, s, schlanga);
 			mode_raw(0);
 			clear();
@@ -149,6 +155,8 @@ void play(config cfg) {
 			return;
 		}
         else if(snake_dead){
+            free_queue(&p1_queue);
+            free_queue(&p2_queue);
             free_all(map, s, schlanga);
             mode_raw(0);
             clear();

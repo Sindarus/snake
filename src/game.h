@@ -49,6 +49,7 @@ typedef struct config{
     int size;           //snake size
     int AI_version;
     int mode;           //1 if human vs schlanga, 2 if human vs human, 3 if human vs humans through server
+    int nb_players;
 } config;
 
 // PROTOTYPES ==========================================================

@@ -26,6 +26,7 @@ bool queue_full(queue* q);
 void enqueue(queue* q, direction elt);
 direction dequeue(queue* q);
 void display_queue_int(queue q);
+void free_queue(queue* q);
 
 #endif
 
