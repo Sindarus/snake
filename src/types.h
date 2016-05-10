@@ -70,7 +70,7 @@ typedef struct field {
 coord new_coord(int x, int y);
 coord new_coord_empty();
 field* new_field();
-snake* new_snake(t_type type, int size, coord start_pos, field* map);
+snake* new_snake(t_type type, int size, int start_pos, field* map);
 
 // Destructors =========================================================
 void free_snake(snake* s);

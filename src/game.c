@@ -34,10 +34,10 @@ void play(config cfg) {
     field* map = new_field();
 
     //creating snakes
-    coord start_pos = new_coord(map->height/2, map->width/5);           //Starting position of snake depending on size of the window
-    coord start_pos2 = new_coord(map->height/2, 4*map->width/5);        //Starting position of snake depending on size of the window
-    snake* s = new_snake(T_SNAKE, cfg.size, start_pos, map);            //Create snake with size 10 at start_pos on map
-    snake* schlanga = new_snake(T_SCHLANGA, cfg.size, start_pos2, map); //Create snake with size 10 at start_pos on map
+    // coord start_pos = new_coord(map->height/2, map->width/5);           //Starting position of snake depending on size of the window
+    // coord start_pos2 = new_coord(map->height/2, 4*map->width/5);        //Starting position of snake depending on size of the window
+    snake* s = new_snake(T_SNAKE, cfg.size, 0, map);            //Create snake with size 10 at start_pos on map
+    snake* schlanga = new_snake(T_SCHLANGA, cfg.size, 1, map); //Create snake with size 10 at start_pos on map
 
     queue p1_queue = new_queue(MAX_INPUT_STACK);    //queue used to stack p1 input
     queue p2_queue = new_queue(MAX_INPUT_STACK);    //queue used to stack p2 input

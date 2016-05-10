@@ -89,37 +89,98 @@ field* new_field() {
 }
 
 /**
-* \fn snake* new_snake(t_type type, int size, coord start_pos, field* map);
+* \fn snake* new_snake(t_type type, int size, int start_pos, field* map);
 * \brief Used to create a new variable of type 'snake'
+* \param start_pos An integer between 0 and 11 corresponding to position at which to start
 * \returns a pointer to the newly created 'snake' variable
 */
-snake* new_snake(t_type type, int size, coord start_pos, field* map) {
+snake* new_snake(t_type type, int size, int start_pos, field* map) {
     snake* s = malloc(sizeof(snake));
 
     s->type = type;
     s->body = malloc(size*sizeof(coord));
     s->head = size-1;
     s->size = size;
-    s->dir = UP;
 
-    s->body[size-1] = start_pos;  //at first, the snake fits in one square
+    /*
+    _________________________
+    |                       |
+    |                       |
+    |          62A          |
+    |                       |
+    |    4            9     |
+    |    0            1     |
+    |    8            5     |
+    |                       |
+    |          B37          |
+    |_______________________|
+
+    */
+    switch(start_pos){
+        case 0:
+            s->body[size-1] = new_coord(0.5*map->height, 0.2*map->width);
+            s->dir = RIGHT;
+            break;
+        case 1:
+            s->body[size-1] = new_coord(0.5*map->height, 0.8*map->width);
+            s->dir = LEFT;
+            break;
+        case 2:
+            s->body[size-1] = new_coord(0.2*map->height, 0.5*map->width);
+            s->dir = DOWN;
+            break;
+        case 3:
+            s->body[size-1] = new_coord(0.8*map->height, 0.5*map->width);
+            s->dir = UP;
+            break;
+        case 4:
+            s->body[size-1] = new_coord(0.5*map->height+2, 0.2*map->width-2);
+            s->dir = RIGHT;
+            break;
+        case 5:
+            s->body[size-1] = new_coord(0.5*map->height-2, 0.8*map->width+2);
+            s->dir = LEFT;
+            break;
+        case 6:
+            s->body[size-1] = new_coord(0.2*map->height-2, 0.5*map->width-2);
+            s->dir = DOWN;
+            break;
+        case 7:
+            s->body[size-1] = new_coord(0.8*map->height+2, 0.5*map->width+2);
+            s->dir = UP;
+            break;
+        case 8:
+            s->body[size-1] = new_coord(0.5*map->height-2, 0.2*map->width-2);
+            s->dir = RIGHT;
+            break;
+        case 9:
+            s->body[size-1] = new_coord(0.5*map->height+2, 0.8*map->width+2);
+            s->dir = LEFT;
+            break;
+        case 10:
+            s->body[size-1] = new_coord(0.2*map->height-2, 0.5*map->width+2);
+            s->dir = DOWN;
+            break;
+        case 11:
+            s->body[size-1] = new_coord(0.8*map->height+2, 0.5*map->width-2);
+            s->dir = UP;
+            break;
+    }
+
     int i;
     for(i = size-2; i >= 0; i--){
         s->body[i].x = -1;
         s->body[i].y = -1;
     }
 
-
     if(s->type == T_SNAKE){
-        print_to_pos_colored(start_pos, 's', BLUE);
+        print_to_pos_colored(s->body[size-1], 's', BLUE);
     }
     if(s->type == T_SCHLANGA){
-        print_to_pos_colored(start_pos, '$', YELLOW);
+        print_to_pos_colored(s->body[size-1], '$', YELLOW);
     }
 
-    set_square_at(map, start_pos, SNAKE);
-
-
+    set_square_at(map, s->body[size-1], SNAKE);
 
     return s;
 }
