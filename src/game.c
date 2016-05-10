@@ -233,7 +233,7 @@ int move(snake* s, direction d, field* map) {
 		case POPWALL:
 			{
 				int popwall;
-				int nbwalls = map->width*map->height/100;
+				int nbwalls = map->width*map->height/(100+rand()%50);
 				for (popwall = 0; popwall < nbwalls; popwall++) {
 					coord pos_wall = new_coord(1 + rand() % (map->height-1), 1 + rand() % (map->width-1));
 					if (get_square_at(map, pos_wall) == EMPTY) {
