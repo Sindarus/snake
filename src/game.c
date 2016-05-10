@@ -124,6 +124,12 @@ void play(config cfg) {
                     case 4:
                         cur_dir = aggro_dist(schlanga, map, s);
                         break;
+                    case 5 :
+                        cur_dir = defensif_dist(schlanga, map, s);
+                        break;
+                    case 6 :
+                        cur_dir = heat_map(schlanga, map);
+                        break;
                     default:
                         free_all(map, s, schlanga); mode_raw(0); clear();
                         printf("In 'move()' : AI_version not recognized.\n");

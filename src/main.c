@@ -93,19 +93,17 @@ int main(){
                     cfg.size = 1;
                 }
 
-                printf("Select the version of the AI : 1, 2, 3 or 4 ?\n");
+                printf("Select the version of the AI : between 1 and 6\n");
                 if(scanf("%i", &(cfg.AI_version)) == 0){
                     printf("Menu error\n");
                     exit(1);
                 }
-                if(cfg.AI_version >= 1 && cfg.AI_version <= 4){
+                if(cfg.AI_version >= 1 && cfg.AI_version <= 6){
                     play(cfg);
                 }
                 else{
-                    printf("version of AI not implemented. Selecting 4 instead. Enter 1 to continue.\n");
-                    cfg.AI_version = 4;
-                    scanf("%i", &choice);
-                    play(cfg);
+                    printf("Version of AI not implemented. Returning to main menu.\n");
+                    sleep(1);
                 }
                 break;
             case 2:
@@ -129,7 +127,8 @@ int main(){
                 about();
                 break;
             default :
-                printf("Choose again please.\n");
+                printf("This choice does not exist. Returning to main menu.\n");
+                sleep(1);
                 break;
         }
     }
