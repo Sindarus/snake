@@ -14,10 +14,10 @@
 #define C_P1_LEFT 'q'      /**< key to move player 1 left.     */
 #define C_P1_RIGHT 'd'     /**< key to move player 1 right.    */
 
-#define C_P2_UP '5'        /**< key to move player 2 up.       */
-#define C_P2_DOWN '2'      /**< key to move player 2 down.     */
-#define C_P2_LEFT '1'      /**< key to move player 2 left.     */
-#define C_P2_RIGHT '3'     /**< key to move player 2 right.    */
+#define C_P2_UP 'i'        /**< key to move player 2 up.       */
+#define C_P2_DOWN 'k'      /**< key to move player 2 down.     */
+#define C_P2_LEFT 'j'      /**< key to move player 2 left.     */
+#define C_P2_RIGHT 'l'     /**< key to move player 2 right.    */
 
 #define C_QUIT 27          /**< number of key to quit. 27 = esc      */
 

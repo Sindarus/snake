@@ -103,7 +103,8 @@ snake* new_snake(t_type type, int size, coord start_pos, field* map) {
     s->dir = UP;
 
     s->body[size-1] = start_pos;  //at first, the snake fits in one square
-    for(int i = size-2; i >= 0; i--){
+    int i;
+    for(i = size-2; i >= 0; i--){
         s->body[i].x = -1;
         s->body[i].y = -1;
     }

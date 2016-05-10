@@ -213,9 +213,8 @@ int move(snake* s, direction d, field* map) {
     square temp_square = get_square_at(map, get_head_coord(s));
 
 	int collision;
-	int popwall;
 
-    switch(temp_square) {
+	switch(temp_square) {
 		case WALL:
 			//~ write(2, "hit a wall\n", 11*sizeof(char));
 			collision = 1;
@@ -232,15 +231,19 @@ int move(snake* s, direction d, field* map) {
 			collision = 0;
 			break;
 		case POPWALL:
-			for (popwall = 0; popwall < 5; popwall++) {
-				coord pos_wall = new_coord(1 + rand() % (map->height-1), 1 + rand() % (map->width-1));
-				if (get_square_at(map, pos_wall) == EMPTY) {
-					set_square_at(map, pos_wall, WALL);
-					print_to_pos_colored(pos_wall, '#', RED);
+			{
+				int popwall;
+				int nbwalls = map->width*map->height/100;
+				for (popwall = 0; popwall < nbwalls; popwall++) {
+					coord pos_wall = new_coord(1 + rand() % (map->height-1), 1 + rand() % (map->width-1));
+					if (get_square_at(map, pos_wall) == EMPTY) {
+						set_square_at(map, pos_wall, WALL);
+						print_to_pos_colored(pos_wall, '#', RED);
+					}
 				}
+				collision = 0;
+				break;
 			}
-			collision = 0;
-			break;
 		case HIGHSPEED:
 			collision = 0;
 			map->speed += ADD_SPEED;
