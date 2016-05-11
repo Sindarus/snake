@@ -49,12 +49,8 @@ typedef struct config{
     int size;           //snake size
     int AI_version;
     int mode;           //1 if human vs schlanga, 2 if human vs human, 3 if human vs humans through server
-<<<<<<< Updated upstream
-    int nb_players;
-=======
     int nb_players;             //number of players (for online version)
     int id;                     //id of the client's snake (for online version)
->>>>>>> Stashed changes
 } config;
 
 // PROTOTYPES ==========================================================
