@@ -1,14 +1,14 @@
 CC = gcc
 CFLAGS = -g -Wall -Wextra
 
-all: create_obj snake snake_test
+all: create_obj snake snake_test client server
 
 
 create_obj:
 	@ if [ ! -d "obj" ]; then mkdir obj; echo "mkdir obj";fi
 
 
-snake: obj/game.o obj/main.o obj/types.o obj/game.o obj/AI.o obj/queue.o
+snake: obj/main.o obj/game.o obj/types.o obj/game.o obj/AI.o obj/queue.o
 	$(CC) $(CFLAGS) obj/types.o obj/game.o obj/AI.o obj/main.o obj/queue.o -o snake -lm
 
 obj/main.o: src/main.c src/game.h
@@ -42,6 +42,16 @@ obj/test_types.o: src/test_types.c src/test_types.h src/types.h
 
 obj/test_AI.o: src/test_AI.c src/test_AI.h src/types.h
 	$(CC) $(CFLAGS) -c src/test_AI.c -o $@
+
+
+
+client: src/client.c obj/types.o obj/game.o obj/queue.o obj/AI.o
+	$(CC) $(CFLAGS) src/client.c obj/types.o obj/game.o obj/queue.o obj/AI.o -lm -o client
+
+
+
+server: src/server.c obj/types.o obj/game_with_no_display.o obj/queue.o obj/AI.o
+	$(CC) $(CFLAGS) src/server.c obj/types.o obj/game_with_no_display.o obj/queue.o obj/AI.o -lpthread -lm -o server
 
 
 

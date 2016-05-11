@@ -29,13 +29,12 @@
 */
 void play(config cfg) {
     clear();
+    mode_raw(1);
 
     //creating field
     field* map = new_field();
 
     //creating snakes
-    // coord start_pos = new_coord(map->height/2, map->width/5);           //Starting position of snake depending on size of the window
-    // coord start_pos2 = new_coord(map->height/2, 4*map->width/5);        //Starting position of snake depending on size of the window
     snake* s = new_snake(T_SNAKE, cfg.size, 0, map);            //Create snake with size 10 at start_pos on map
     snake* schlanga = new_snake(T_SCHLANGA, cfg.size, 1, map); //Create snake with size 10 at start_pos on map
 
@@ -48,8 +47,6 @@ void play(config cfg) {
     bool schlanga_dead;   //True if the schlanga died.
     int random_item;      //Random integer deciding if an item pops or not
     direction cur_dir;
-
-    mode_raw(1);
 
     //Main loop
     //1 - pass time
