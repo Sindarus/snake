@@ -6,15 +6,18 @@
 #include <strings.h>    //for 'bzero()'
 #include <unistd.h>     //for 'read()'
 #include <sys/time.h>
+#include <signal.h>
 
 #include "game.h"
 
 #define BACKLOG 10
 #define SERV_ADDR "127.0.0.1"
-#define PORT 1234
+#define PORT 3490
 #define MAX_PLAYERS 10
-#define SIZE 5         //size of the snake
+#define SIZE 10         //size of the snake
 #define PING 10
+
+#define ARENA 40    //size of the square arena
 
 int players[MAX_PLAYERS];
 int players_dir[MAX_PLAYERS];
@@ -103,7 +106,7 @@ void accept_players(int* wait_players){
 
 void play_server(config cfg) {
     //creating field
-    field* map = new_field();
+    field* map = new_field(ARENA, ARENA);
 
     //creating snakes
     int i;
@@ -116,12 +119,14 @@ void play_server(config cfg) {
     gettimeofday(&last_step_time, NULL);
     struct timeval now;
     int elapsed_time;       //elapsed time
+    int c_dead = 0;         //count dead players
     while(1){
         //SUMMARY
         //1 - let's check if it's time to process inputs
         //2 - let's send everyone the directions
         //3 - let's make snakes move
         //4 - let's update last_step_time
+        //5 - let's check if the game has to end
         //--------------------------------------
 
         //1 - let's check if it's time to retrieve input
@@ -138,22 +143,43 @@ void play_server(config cfg) {
                 if(players_dir[i] != 4){       //if the player is not dead (dir = 4 => dead player)
                     if(move(snakes[i], players_dir[i], map)){
                         players_dir[i] = 4;
-                        printf("Player %i died. What a noob !\n", i);
+                        printf("Player %i died.\n", i);
+                        c_dead++;
                     }
                 }
             }
 
             //4 - let's update last_step_time
             gettimeofday(&last_step_time, NULL);
+
+            //5 - let's check if the game has to end
+            if(c_dead >= cfg.nb_players - 1){
+                printf("Game has ended, only one player left alive.\n");
+            }
         }
         else{
             //sleep 90% of the remaining time
             usleep( (((TIME_STEP - (PING/2)) - elapsed_time) * 0.9) * 1000);
         }
     }
+
+    for(i = 0; i<cfg.nb_players; i++){
+        free_snake(snakes[i]);
+    }
+    free_field(map);
+}
+
+void safe_quit(){
+    int i;
+    close(sockfd);
+    for(i = 0; i<MAX_PLAYERS; i++){
+        close(players[i]);
+    }
 }
 
 int main(){
+    signal(SIGINT, safe_quit);
+
     int size = SIZE;
     int i;
     pthread_t my_thread;                //accept_player thread
@@ -185,11 +211,20 @@ int main(){
         exit(1);
     }
 
-    while(read(0, &c, sizeof(char)) != 0){}
+    int nb_players;
+    while(1){
+        while(read(0, &c, sizeof(char)) != 0){}
+        nb_players = count_players();
+        if(nb_players < 1){
+            printf("No enough player to start a game.\n");
+        }
+        else{
+            break;
+        }
+    }
 
     wait_players = 0;   //this will cause the accept_players thread to terminate
-
-    int nb_players = count_players();
+    printf("From now on, no new players will be accepted.\npress ctrl+D to start the game.\n");
 
     //SENDING INFO TO CLIENTS
     for(i = 0; i < nb_players; i++){
@@ -205,7 +240,6 @@ int main(){
         }
     }
 
-    printf("From now on, no new players will be accepted.\npress ctrl+D to start the game.\n");
 
     //WAITING TO START THE GAME
     while(read(0, &c, sizeof(char)) != 0){}
@@ -229,19 +263,11 @@ int main(){
 
     play_server(cfg);
 
-
-
-
-
     printf("Press ctrl+D to terminate server.\n");
     while(read(0, &c, sizeof(char)) != 0){}
 
-
     //ENDING
-    close(sockfd);
-    for(i = 0; i<nb_players; i++){
-        close(players[i]);
-    }
+    safe_quit();
 
     return 0;
 }

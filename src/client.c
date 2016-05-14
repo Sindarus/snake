@@ -12,8 +12,10 @@
 #include "queue.h"
 
 #define SERV_ADDR "127.0.0.1"
-#define PORT 1234
+#define PORT 3490
 #define PING 10
+
+#define ARENA 40    //size of the square arena
 
 int sockfd;
 
@@ -57,7 +59,7 @@ void play_client(config cfg) {
         perror("handle_server read waiting for signal");
     }
     else if(ret_serv == 0){
-        printf("Server on socket %i closed connection wtf ?\n", sockfd); safe_quit(1);
+        printf("Server on socket %i closed connection.\n", sockfd); clear(); safe_quit(1);
     }
 
     if(ok != 1){
@@ -71,7 +73,7 @@ void play_client(config cfg) {
     mode_raw(1);
 
     //creating field
-    field* map = new_field();
+    field* map = new_field(ARENA, ARENA);
 
     //creating snakes
     int i;
@@ -137,7 +139,7 @@ void play_client(config cfg) {
                 perror("handle_server read"); safe_quit(1);
             }
             else if(ret_serv == 0){
-                printf("Server closed connection.\n"); safe_quit(1);
+                clear(); printf("Server closed connection.\n"); safe_quit(1);
             }
 
             //5 - let's make snakes move
@@ -188,17 +190,17 @@ int main(){
     printf("Waiting for server to send info aout the game.\n");
     ret_serv = read(sockfd, &size, 1*sizeof(int));
     if(ret_serv == -1){ perror("read"); safe_quit(1); }
-    if(ret_serv == 0){ printf("Server closed connection.\n"); safe_quit(1);}
+    if(ret_serv == 0){ clear(); printf("Server closed connection.\n"); safe_quit(1);}
     printf("Snakes will be size %i.\n", size);
 
     ret_serv = read(sockfd, &nb_players, 1*sizeof(int));
     if(ret_serv == -1){ perror("read"); safe_quit(1);}
-    if(ret_serv == 0){ printf("server closed connection.\n"); safe_quit(1);}
+    if(ret_serv == 0){ clear(); printf("server closed connection.\n"); safe_quit(1);}
     printf("There are %i players in the game.\n", nb_players);
 
     ret_serv = read(sockfd, &id, 1*sizeof(int));
     if(ret_serv == -1){ perror("read"); safe_quit(1); }
-    if(ret_serv == 0){ printf("server closed connection.\n"); safe_quit(1);}
+    if(ret_serv == 0){ clear(); printf("server closed connection.\n"); safe_quit(1);}
     printf("You have the id : %i.\n", id);
 
     printf("Waiting for the server to start the game.\n");
