@@ -27,13 +27,11 @@ bool test_new_coord_empty(){
 }
 
 bool test_new_field(){
-    field* map = new_field();
+    field* map = new_field(20, 20);
     int i, j;
 
-    struct winsize sz;
-    ioctl(0, TIOCGWINSZ, &sz); // Calculate size of window
-    if(map->width != sz.ws_col) return 0;
-    if(map->height != sz.ws_row) return 0;
+    if(map->width != 20) return 0;
+    if(map->height != 20) return 0;
 
     for(i=0; i<map->height; i++){
         for(j=0; j<map->width; j++){
@@ -51,7 +49,7 @@ bool test_new_field(){
 }
 
 bool test_new_snake(){
-    field* map = new_field();
+    field* map = new_field(20, 20);
     snake* s = new_snake(T_SNAKE, 6, 0, map);
 
     if(s->head != 5 || s->size != 6){
@@ -112,7 +110,7 @@ bool test_turn_right(){
 }
 
 bool test_get_square_at(){
-    field* map = new_field();
+    field* map = new_field(20, 20);
     int i,j;
     for (i = 0; i < map->height; i++){
         for (j = 0; j < map->width; j++){
@@ -128,7 +126,8 @@ bool test_get_square_at(){
 }
 
 bool test_set_square_at(){
-    field* map = new_field();int i,j;
+    field* map = new_field(20, 20);
+    int i, j;
     for(i=0; i<map->height; i++) {
         for (j=0; j<map->width; j++) {
             set_square_at(map, new_coord(i, j), WALL);
@@ -140,7 +139,7 @@ bool test_set_square_at(){
 }
 
 bool test_get_tail(){
-    field* map = new_field();
+    field* map = new_field(20, 20);
     snake* s = new_snake(T_SNAKE, 8, 0, map);
 
     coord c = s->body[get_tail(s)];
@@ -156,7 +155,7 @@ bool test_get_tail(){
 }
 
 bool test_get_head_coord(){
-    field* map = new_field();
+    field* map = new_field(20, 20);
     snake* s = new_snake(T_SNAKE, 8, 0, map);
 
     coord c = get_head_coord(s);
@@ -172,7 +171,7 @@ bool test_get_head_coord(){
 }
 
 bool test_get_tail_coord(){
-    field* map = new_field();
+    field* map = new_field(20, 20);
     snake* s = new_snake(T_SNAKE, 8, 0, map);
 
     coord c = get_tail_coord(s);
