@@ -56,6 +56,7 @@ field* new_field(int width, int height) {
     }
     if (width > sz.ws_col || height > sz.ws_row){
         printf("Your window is too small to create a field of size %ix%i", width, height);
+        exit(1);
     }
 
     int a, b;
