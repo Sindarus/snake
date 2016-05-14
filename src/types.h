@@ -69,7 +69,7 @@ typedef struct field {
 // Constructors ========================================================
 coord new_coord(int x, int y);
 coord new_coord_empty();
-field* new_field();
+field* new_field(int width, int height);
 snake* new_snake(t_type type, int size, int start_pos, field* map);
 
 // Destructors =========================================================

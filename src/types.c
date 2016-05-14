@@ -46,19 +46,24 @@ coord new_coord_empty() {
 * \brief Used to create a new 'field'
 * \returns a pointer to the newly created 'field' variable
 */
-field* new_field() {
+field* new_field(int width, int height) {
     struct winsize sz; // Struct containing size of window
+    ioctl(0, TIOCGWINSZ, &sz); // Calculate size of window
+    //sz.ws_col is the width, sz.ws_col the height of the window
+    if (sz.ws_col < MIN_WINDOW_WIDTH || sz.ws_row < MIN_WINDOW_HEIGHT) {
+        printf("Your window is too small\n");
+        exit(1);
+    }
+    if (width > sz.ws_col || height > sz.ws_row){
+        printf("Your window is too small to create a field of size %ix%i", width, height);
+    }
+
     int a, b;
 
     field* map = malloc(sizeof(field));
 
-    ioctl(0, TIOCGWINSZ, &sz); // Calculate size of window
-    map->width = sz.ws_col; // Width of window
-    map->height = sz.ws_row; // Height of window
-    if (map->width < MIN_WINDOW_WIDTH || map->height < MIN_WINDOW_HEIGHT) {
-        printf("Your window is too small\n");
-        exit(1);
-    }
+    map->width = width;
+    map->height = height;
 
     //creation of 'f'
     map->f = malloc(map->height*sizeof(square*));

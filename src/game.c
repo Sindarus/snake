@@ -12,6 +12,7 @@
 #include <stdlib.h>         //for 'exit()'
 #include <termios.h>        //for 'struct termios'
 #include <unistd.h>         //for 'usleep()'
+#include <sys/ioctl.h>      //for 'ioctl()'
 
 #include "types.h"
 #include "AI.h"
@@ -32,7 +33,9 @@ void play(config cfg) {
     mode_raw(1);
 
     //creating field
-    field* map = new_field();
+    struct winsize sz; // Struct containing size of window
+    ioctl(0, TIOCGWINSZ, &sz); // Calculate size of window
+    field* map = new_field(sz.ws_col, sz.ws_row);
 
     //creating snakes
     snake* s = new_snake(T_SNAKE, cfg.size, 0, map);            //Create snake with size 10 at start_pos on map
