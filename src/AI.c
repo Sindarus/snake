@@ -293,11 +293,11 @@ direction defensif_dist(snake* s, field* map, snake* enemy){
     float a=0,b=0,c=0,d=0;
     coord start = get_head_coord(s);
 
-    if (dist(start,end) > 6){
+    if (dist(start,end) > 0.5*map->height){
         spread(s,map);
     }
 
-    else{ 
+    else{
         if (detect(s,UP,map)){
             a=dist(coord_after_dir(start,UP),end);
         }
@@ -386,7 +386,7 @@ direction heat_map(snake* s, field* map){
             }
         }
     }
-    
+
     for(i=0;i<5;i++){
         for(j=1;j<(map->height-1);j++){
             for(k=1;k<(map->width-1);k++){
