@@ -25,6 +25,31 @@ void about(){
 }
 
 /**
+* \fn void about_AI();
+* \brief Displays info about the different types of IA
+*/
+void about_AI(){
+    printf("There are 6 different types of IA implemented:\n");
+    printf("1 - Rngesus - defensive\n");
+    printf("    Each turn, picks a random direction. No wall avoiding.\n");
+    printf("2 - Rngesu2 - defensive\n");
+    printf("    Each turn, picks a random direction that does not kill itself.\n");
+    printf("3 - Spread - defensive\n");
+    printf("    Each turn, avoids closing himself in a box that is already\n");
+    printf("    formed on the board.\n");
+    printf("4 - Aggro_dist - aggressive\n");
+    printf("    Each turn, moves such as to reduce distance between itself and\n");
+    printf("    the snake. When it is 6 square close to the snake, it runs 'spread'.\n");
+    printf("5 - defensive_dist - defensive\n");
+    printf("    Each turn, if it is 6 squares close to the snakes, it moves\n");
+    printf("    such as to increase distance between itself and the snake. Else,\n");
+    printf("    it runs 'spread'\n");
+    printf("6 - heatmap - aggressive\n");
+    printf("    Each turn, it picks the best move using a heatmap.\n");
+    printf("    (see english wikipedia)\n");
+}
+
+/**
 * \fn void instructions();
 * \brief Displays info about how to play the game
 */
@@ -70,7 +95,8 @@ int main(){
         printf("1 - Play against an AI\n");
         printf("2 - Play with another human\n");
         printf("3 - How to play ?\n");
-        printf("4 - About this program\n");
+        printf("4 - Info about the AIs\n");
+        printf("5 - About this program\n");
         printf("Please enter your choice.\n");
         if(scanf("%i", &choice) == 0){
             printf("Menu error\n");
@@ -124,6 +150,9 @@ int main(){
                 instructions();
                 break;
             case 4:
+                about_AI();
+                break;
+            case 5:
                 about();
                 break;
             default :
