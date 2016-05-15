@@ -15,7 +15,8 @@
 #define PORT 3490
 #define PING 10
 
-#define ARENA 40    //size of the square arena
+#define WIDTH 40
+#define HEIGHT 20
 
 int sockfd;
 
@@ -73,7 +74,7 @@ void play_client(config cfg) {
     mode_raw(1);
 
     //creating field
-    field* map = new_field(ARENA, ARENA);
+    field* map = new_field(WIDTH, HEIGHT);
 
     //creating snakes
     int i;

@@ -17,7 +17,8 @@
 #define SIZE 10         //size of the snake
 #define PING 10
 
-#define ARENA 40    //size of the square arena
+#define WIDTH 40    //size of the square arena
+#define HEIGHT 20
 
 int players[MAX_PLAYERS];
 int players_dir[MAX_PLAYERS];
@@ -106,7 +107,7 @@ void accept_players(int* wait_players){
 
 void play_server(config cfg) {
     //creating field
-    field* map = new_field(ARENA, ARENA);
+    field* map = new_field(WIDTH, HEIGHT);
 
     //creating snakes
     int i;
