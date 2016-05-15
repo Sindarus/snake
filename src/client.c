@@ -11,6 +11,7 @@
 #include "game.h"
 #include "queue.h"
 
+//#define SERV_ADDR "192.168.0.38"
 #define SERV_ADDR "127.0.0.1"
 #define PORT 3490
 #define PING 10
@@ -132,6 +133,20 @@ void play_client(config cfg) {
             cur_dir = (cur_dir == opposite(snakes[cfg.id]->dir)) ? snakes[cfg.id]->dir : cur_dir;
             if(write(sockfd, &cur_dir, 1*sizeof(direction)) < 0){
                 perror("handle_server write"); safe_quit(1);
+            }
+            switch(cur_dir){
+                case 0:
+                    write(2, "sent 0\n", 7*sizeof(char));
+                    break;
+                case 1:
+                    write(2, "sent 1\n", 7*sizeof(char));
+                    break;
+                case 2:
+                    write(2, "sent 2\n", 7*sizeof(char));
+                    break;
+                case 3:
+                    write(2, "sent 3\n", 7*sizeof(char));
+                    break;
             }
 
             //4 - let's wait for server's directions

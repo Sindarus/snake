@@ -11,6 +11,7 @@
 #include "game.h"
 
 #define BACKLOG 10
+//#define SERV_ADDR "192.168.0.38"
 #define SERV_ADDR "127.0.0.1"
 #define PORT 3490
 #define MAX_PLAYERS 10
@@ -23,6 +24,16 @@
 int players[MAX_PLAYERS];
 int players_dir[MAX_PLAYERS];
 int sockfd;
+
+void safe_quit(int return_value){
+    int i;
+    close(sockfd);
+    for(i = 0; i<MAX_PLAYERS; i++){
+        close(players[i]);
+    }
+    printf("safe quitted\n");
+    exit(return_value);
+}
 
 /**
 * \fn int diff(struct timeval big_time, struct timeval small_time);
@@ -46,7 +57,7 @@ void create_listen_socket(){
     printf("Creating socket...\n");
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1){
         perror("socket");
-        exit(1);
+        safe_quit(1);
     }
     printf("Ok.\n");
 
@@ -61,7 +72,7 @@ void create_listen_socket(){
     printf("Binding adress to socket...\n");
     if(bind(sockfd, (struct sockaddr*) &my_addr, sizeof(struct sockaddr_in)) == -1){
         perror("bind");
-        exit(1);
+        safe_quit(1);
     }
     printf("Ok.\n");
 
@@ -78,11 +89,12 @@ void read_client(int* id){
 
     while(1){
         if(read(players[*id], &cur_dir, 1*sizeof(direction)) == -1){
-            perror("read on a client"); exit(1);
+            perror("read on a client");  safe_quit(1);
         }
         if(cur_dir >= 0 && cur_dir <=3 && players_dir[*id] != 4){
             //if player's move is valid and if he's not dead
             players_dir[*id] = cur_dir;
+            printf("Read dir %i for client %i.\n", cur_dir, *id);
         }
     }
 
@@ -97,7 +109,7 @@ void accept_players(int* wait_players){
     while(*wait_players && i < MAX_PLAYERS){
         if((newfd = accept(sockfd, &their_addr, &stupid_var)) == -1){
             perror("accept");
-            exit(1);
+            safe_quit(1);
         }
         players[i] = newfd;
         i++;
@@ -138,6 +150,11 @@ void play_server(config cfg) {
             for(i = 0; i<cfg.nb_players; i++){
                 write(players[i], &players_dir, cfg.nb_players*sizeof(direction));
             }
+            printf("Directions sent : \n");
+            for(i = 0; i<cfg.nb_players; i++){
+                printf("%i ", players_dir[i]);
+            }
+            printf("\n");
 
             //3 - let's make snakes move
             for(i = 0; i<cfg.nb_players; i++){
@@ -156,6 +173,8 @@ void play_server(config cfg) {
             //5 - let's check if the game has to end
             if(c_dead >= cfg.nb_players - 1){
                 printf("Game has ended, only one player left alive.\n");
+                sleep(3);
+                break;
             }
         }
         else{
@@ -170,13 +189,7 @@ void play_server(config cfg) {
     free_field(map);
 }
 
-void safe_quit(){
-    int i;
-    close(sockfd);
-    for(i = 0; i<MAX_PLAYERS; i++){
-        close(players[i]);
-    }
-}
+
 
 int main(){
     signal(SIGINT, safe_quit);
@@ -209,7 +222,7 @@ int main(){
     printf("The server is now open to connections.\nPress ctrl+D when everyone has joined.\n");
     if(pthread_create(&my_thread, 0, (void*) &accept_players, &wait_players) != 0){
         printf("error : could not create thread\n");
-        exit(1);
+        safe_quit(1);
     }
 
     int nb_players;
@@ -250,10 +263,10 @@ int main(){
     for(i = 0; i < nb_players; i++){
         ret_cli = write(players[i], &ok, 1*sizeof(int));
         if(ret_cli < 0){
-            perror("write sending signal"); exit(1);
+            perror("write sending signal"); safe_quit(1);
         }
         else if(ret_cli == 0){
-            printf("Client %i closed connection.\n", i); exit(1);
+            printf("Client %i closed connection.\n", i); safe_quit(1);
         }
     }
     printf("Ok.\n");
@@ -268,7 +281,7 @@ int main(){
     while(read(0, &c, sizeof(char)) != 0){}
 
     //ENDING
-    safe_quit();
+    safe_quit(0);
 
     return 0;
 }
