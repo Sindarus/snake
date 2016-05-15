@@ -120,7 +120,7 @@ int main(){
                 }
 
                 printf("Select the version of the AI : between 1 and 6.\n");
-                printf("(4 - aggressive. 5 - defensive.)")
+                printf("(4 - aggressive. 5 - defensive.)");
                 if(scanf("%i", &(cfg.AI_version)) == 0){
                     printf("Menu error\n");
                     exit(1);
